@@ -1,0 +1,31 @@
+** xajax Error Log - Nov  2006 10:55:19 PM **
+** xajax Error Log - Aug 28 2010 03:03:44 PM **
+
+----
+[WARNING] include(file_doesnt_exist.php) [<a href='function.include'>function.include</a>]: failed to open stream: No such file or directory
+Error on line 58 of file /var/www/kimaidev/tests/errorHandlingTest.php
+----
+[WARNING] include() [<a href='function.include'>function.include</a>]: Failed opening 'file_doesnt_exist.php' for inclusion (include_path='.:/usr/share/pear:/usr/share/php')
+Error on line 58 of file /var/www/kimaidev/tests/errorHandlingTest.php
+
+
+** xajax Error Log - Aug 28 2010 03:03:56 PM **
+
+----
+[WARNING] include(file_doesnt_exist.php) [<a href='function.include'>function.include</a>]: failed to open stream: No such file or directory
+Error on line 58 of file /var/www/kimaidev/tests/errorHandlingTest.php
+----
+[WARNING] include() [<a href='function.include'>function.include</a>]: Failed opening 'file_doesnt_exist.php' for inclusion (include_path='.:/usr/share/pear:/usr/share/php')
+Error on line 58 of file /var/www/kimaidev/tests/errorHandlingTest.php
+
+
+** xajax Error Log - Aug 28 2010 07:28:18 PM **
+
+----
+[WARNING] include(file_doesnt_exist.php) [<a href='function.include'>function.include</a>]: failed to open stream: No such file or directory
+Error on line 58 of file /var/www/kimaidev/tests/errorHandlingTest.php
+----
+[WARNING] include() [<a href='function.include'>function.include</a>]: Failed opening 'file_doesnt_exist.php' for inclusion (include_path='.:/usr/share/pear:/usr/share/php')
+Error on line 58 of file /var/www/kimaidev/tests/errorHandlingTest.php
+
+
