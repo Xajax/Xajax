@@ -312,7 +312,7 @@ final class xajax
 	*/
 	public static function getVersion()
 	{
-		return 'xajax 0.5';
+		return 'xajax 0.6 beta';
 	}
 
 	/*
