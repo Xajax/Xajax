@@ -45,6 +45,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 	private $sLanguage;
 	private $nResponseQueueSize;
 	private $sDebugOutputID;
+	private $sResponseType;
 
 	public function xajaxIncludeClientScriptPlugin()
 	{
@@ -117,7 +118,10 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 			$this->nResponseQueueSize = $mValue;
 		} else if ('debugOutputID' == $sName) {
 			$this->sDebugOutputID = $mValue;
+		} else if ('responseType' == $sName) {
+			$this->sResponseType = $mValue;
 		}
+
 	}
 
 	/*
@@ -171,7 +175,6 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 
 		if ($sJsURI != '' && substr($sJsURI, -1) != '/') 
 			$sJsURI .= '/';
-
 		echo $sCrLf;
 		echo '<';
 		echo 'script type="text/javascript" ';
@@ -181,7 +184,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 		echo '/* <';
 		echo '![CDATA[ */';
 		echo $sCrLf;
-		echo 'try { if (undefined == xajax.config) xajax.config = {}; } catch (e) { xajax = {}; xajax.config = {}; };';
+		echo 'try { if (undefined == typeof xajax.config) xajax.config = {};  } catch (e) { xajax = {}; xajax.config = {};  };';
 		echo $sCrLf;
 		echo 'xajax.config.requestURI = "';
 		echo $this->sRequestURI;
@@ -210,7 +213,10 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 		echo 'xajax.config.JavaScriptURI = "';
 		echo $this->sJsURI;
 		echo '";';
-
+		echo $sCrLf;
+		echo 'xajax.config.responseType = "';
+		echo $this->sResponseType;
+		echo '";';
 		
 		if (false === (null === $this->nResponseQueueSize))
 		{

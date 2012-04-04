@@ -1,5 +1,6 @@
 <?php
 /*
+
 	File: xajaxArgumentManager.inc.php
 
 	Contains the xajaxArgumentManager class
@@ -98,7 +99,7 @@ final class xajaxArgumentManager
 		return false;
 	}
 	
-	private function __argumentStripSlashes($sArg)
+	private function __argumentStripSlashes(&$sArg)
 	{
 		if (false == is_string($sArg))
 			return;
@@ -119,22 +120,22 @@ final class xajaxArgumentManager
 		return $value;
 	}
 
-	private function __decodeXML($xml)
-	{
-		$return = array();
-		$nodes = $xml->e;
-		foreach ($nodes as $node) {
-			$key = (string) $node->k;
-			if (isset($node->v->xjxobj)) {
-				$value = $this->__decodeXML($node->v->xjxobj);
-			} else {
-				$value = $this->__convertValue( (string) $node->v );
-			}
-			$return[$key] = $value;
-		}
-	
-		return $return;
-	}
+//	private function __decodeXML($xml)
+//	{
+//		$return = array();
+//		$nodes = $xml->e;
+//		foreach ($nodes as $node) {
+//			$key = (string) $node->k;
+//			if (isset($node->v->xjxobj)) {
+//				$value = $this->__decodeXML($node->v->xjxobj);
+//			} else {
+//				$value = $this->__convertValue( (string) $node->v );
+//			}
+//			$return[$key] = $value;
+//		}
+//	
+//		return $return;
+//	}
 
 
 	private function __argumentDecode( &$sArg )
@@ -143,7 +144,8 @@ final class xajaxArgumentManager
 		if ('' ==  $sArg ) return;
 
 		$data = json_decode( $sArg , true );
-		if ( null !== $data ) {
+
+		if ( null !== $data && $sArg != $data) {
 			$sArg = $data;
 		} else  {
 			$sArg = $this->__convertValue( $sArg );
@@ -229,6 +231,7 @@ final class xajaxArgumentManager
 	*/
 	private function __construct()
 	{
+
 		$this->aArgs = array();
 		$this->bDecodeUTF8Input = false;
 		$this->sCharacterEncoding = 'UTF-8';
@@ -243,6 +246,7 @@ final class xajaxArgumentManager
 		}
 		if (1 == get_magic_quotes_gpc())
 			array_walk($this->aArgs, array(&$this, '__argumentStripSlashes'));
+			
 
 		array_walk($this->aArgs, array(&$this, '__argumentDecode'));
 	}

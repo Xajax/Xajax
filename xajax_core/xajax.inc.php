@@ -247,10 +247,9 @@ final class xajax
 	*/
 	public function __wakeup()
 	{
-		ob_start();
 
 		$sLocalFolder = dirname(__FILE__);
-
+		
 //SkipAIO
 		require $sLocalFolder . '/xajaxPluginManager.inc.php';
 		require $sLocalFolder . '/xajaxLanguageManager.inc.php';
@@ -277,7 +276,6 @@ final class xajax
 		$this->objArgumentManager = xajaxArgumentManager::getInstance();
 		$this->objResponseManager = xajaxResponseManager::getInstance();
 		
-		$this->sCoreIncludeOutput = ob_get_clean();
 		$this->configureMany($this->aSettings);
 
 	}
