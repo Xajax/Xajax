@@ -1,9 +1,11 @@
 <?php
-
+//
 $core = dirname(dirname(__FILE__)) . '/xajax_core';
 require_once $core . '/xajax.inc.php';
 
 $xajax = new xajax();
+
+
 
 //$xajax->configure('debug', true);
 $xajax->configure('javascript URI', '../');
