@@ -427,7 +427,7 @@ final class xajaxPluginManager
 
 		if ($sJsURI != '' && substr($sJsURI, -1) != '/')
 			$sJsURI .= '/';
-		if ('' == $sJsURI) { $sJsURI = 'xajax_js/';}
+		$sJsURI .= 'xajax_js/';
 
 		$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_core.js'), 'xajax');
 
@@ -569,8 +569,6 @@ final class xajaxPluginManager
 			{
 				ob_start();
 
-				print $this->printPluginScripts();
-				print $sCrLf;
 
 				$sInPath = dirname(dirname(__FILE__)).'/';
 
@@ -578,6 +576,9 @@ final class xajaxPluginManager
 
 					print file_get_contents($sInPath.$aJsFile[0]);
 				}
+				print $sCrLf;
+
+				print $this->printPluginScripts();
 
 				$sScriptCode = stripslashes(ob_get_clean());
 
