@@ -156,6 +156,15 @@ final class xajax
 
 	private $challengeResponse;
 
+
+	/*
+		String: sessionKey
+
+		The session key to use for response challenges.
+
+	 */
+	private $sessionKey = 'xajax_challenge';
+
 	/*
 		Constructor: xajax
 
@@ -397,7 +406,11 @@ final class xajax
 				$this->bCleanBuffer = $mValue;
 		} else if ('logFile' == $sName) {
 			$this->sLogFile = $mValue;
+		} else if ('sessionKey' == $sName)
+		{
+			$this->sessionKey = $mValue;
 		}
+
 
 		$this->objLanguageManager->configure($sName, $mValue);
 		$this->objArgumentManager->configure($sName, $mValue);
@@ -475,22 +488,22 @@ final class xajax
 		return true;
 	}
 
-	private function loadChallenges($sessionKey)
+	private function loadChallenges()
 	{
 		$challenges = array();
 
-		if (isset($_SESSION[$sessionKey]))
-			$challenges = $_SESSION[$sessionKey];
+		if (isset($_SESSION[$this->sessionKey]))
+			$challenges = $_SESSION[$this->sessionKey];
 
 		return $challenges;
 	}
 
-	private function saveChallenges($sessionKey, $challenges)
+	private function saveChallenges( $challenges)
 	{
 		if (count($challenges) > 10)
 			array_shift($challenges);
 
-		$_SESSION[$sessionKey] = $challenges;
+		$_SESSION[$this->sessionKey] = $challenges;
 	}
 
 	private function makeChallenge($algo, $value)
@@ -521,16 +534,15 @@ final class xajax
 			return false;
 
 		// TODO: Move to configuration option
-		$sessionKey = 'xajax_challenges';
 
-		$challenges = $this->loadChallenges($sessionKey);
+		$challenges = $this->loadChallenges();
 
 		if (isset($this->challengeResponse)) {
 			$key = array_search($this->challengeResponse, $challenges);
 
 			if ($key !== false) {
 				unset($challenges[$key]);
-				$this->saveChallenges($sessionKey, $challenges);
+				$this->saveChallenges($challenges);
 				return true;
 			}
 		}
@@ -539,7 +551,7 @@ final class xajax
 
 		$challenges[] = $challenge;
 
-		$this->saveChallenges($sessionKey, $challenges);
+		$this->saveChallenges( $challenges);
 
 		header("challenge: {$challenge}");
 
