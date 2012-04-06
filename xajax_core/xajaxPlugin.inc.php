@@ -53,7 +53,7 @@ class xajaxRequestPlugin extends xajaxPlugin
 	function configure($sName, $mValue)
 	{
 	}
-
+	
 	/*
 		Function: register
 		
@@ -66,6 +66,9 @@ class xajaxRequestPlugin extends xajaxPlugin
 		return false;
 	}
 
+	function generateHash()
+	{}
+
 	/*
 		Function: generateClientScript
 		
@@ -77,7 +80,7 @@ class xajaxRequestPlugin extends xajaxPlugin
 	function generateClientScript()
 	{
 	}
-
+	
 	/*
 		Function: canProcessRequest
 		
@@ -88,7 +91,7 @@ class xajaxRequestPlugin extends xajaxPlugin
 	{
 		return false;
 	}
-
+	
 	/*
 		Function: processRequest
 		
@@ -124,7 +127,7 @@ class xajaxResponsePlugin extends xajaxPlugin
 		to build the response that will be sent to the client browser.
 	*/
 	var $objResponse;
-
+	
 	/*
 		Function: setResponse
 		
@@ -139,7 +142,7 @@ class xajaxResponsePlugin extends xajaxPlugin
 	{
 		$this->objResponse = $objResponse;
 	}
-
+	
 	/*
 		Function: addCommand
 		
@@ -147,11 +150,11 @@ class xajaxResponsePlugin extends xajaxPlugin
 		will call <xajaxResponse->addPluginCommand> using the reference provided
 		in <xajaxResponsePlugin->setResponse>.
 	*/
-	function addCommand($aAttributes, $sData)
-	{
-		$this->objResponse->addPluginCommand($this, $aAttributes, $sData);
-	}
-
+ 	function addCommand($aAttributes, $sData)
+ 	{
+ 		$this->objResponse->addPluginCommand($this, $aAttributes, $sData);
+ 	}
+	
 	/*
 		Function: getName
 		
@@ -161,15 +164,15 @@ class xajaxResponsePlugin extends xajaxPlugin
 	*/
 	function getName()
 	{
-		//SkipDebug
+//SkipDebug
 		$objLanguageManager = xajaxLanguageManager::getInstance();
 		trigger_error(
 			$objLanguageManager->getText('XJXPLG:GNERR:01')
 			, E_USER_ERROR
-		);
-		//EndSkipDebug
+			);
+//EndSkipDebug
 	}
-
+	
 	/*
 		Function: process
 		
@@ -180,12 +183,12 @@ class xajaxResponsePlugin extends xajaxPlugin
 	*/
 	function process()
 	{
-		//SkipDebug
+//SkipDebug
 		$objLanguageManager = xajaxLanguageManager::getInstance();
 		trigger_error(
 			$objLanguageManager->getText('XJXPLG:PERR:01')
 			, E_USER_ERROR
-		);
-		//EndSkipDebug
+			);
+//EndSkipDebug
 	}
 }

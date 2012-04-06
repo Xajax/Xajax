@@ -24,7 +24,7 @@
 		is a php function available at global scope, or a specific function from
 		an instance of an object.
 */
-if (!defined('XAJAX_FUNCTION')) define ('XAJAX_FUNCTION', 'function');
+if (!defined ('XAJAX_FUNCTION')) define ('XAJAX_FUNCTION', 'function');
 
 // require_once is necessary here as the xajaxEvent class will include this also
 //SkipAIO
@@ -51,7 +51,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		the client script generation phase.
 	*/
 	var $sXajaxPrefix;
-
+	
 	/*
 		String: sDefer
 		
@@ -59,7 +59,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		javascript file is loaded after the page has been fully loaded.
 	*/
 	var $sDefer;
-
+	
 	var $bDeferScriptGeneration;
 
 	/*
@@ -90,7 +90,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		$this->bDeferScriptGeneration = false;
 
 		$this->sRequestedFunction = NULL;
-
+		
 		if (isset($_GET['xjxfun'])) $this->sRequestedFunction = $_GET['xjxfun'];
 		if (isset($_POST['xjxfun'])) $this->sRequestedFunction = $_POST['xjxfun'];
 	}
@@ -123,17 +123,21 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 	*/
 	function register($aArgs)
 	{
-		if (1 < count($aArgs)) {
+		if (1 < count($aArgs))
+		{
 			$sType = $aArgs[0];
 
-			if (XAJAX_FUNCTION == $sType) {
+			if (XAJAX_FUNCTION == $sType)
+			{
 				$xuf = $aArgs[1];
 
 				if (false === ($xuf instanceof xajaxUserFunction))
 					$xuf = new xajaxUserFunction($xuf);
 
-				if (2 < count($aArgs)) {
-					if (is_array($aArgs[2])) {
+				if (2 < count($aArgs))
+				{
+					if (is_array($aArgs[2]))
+					{
 						foreach ($aArgs[2] as $sName => $sValue)
 						{
 							$xuf->configure($sName, $sValue);
@@ -151,6 +155,15 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		return false;
 	}
 
+
+	function generateHash()
+	{
+		$sHash = '';
+		foreach (array_keys($this->aFunctions) as $sKey)
+			$sHash .= $this->aFunctions[$sKey]->getName();
+		return md5($sHash);
+	}
+
 	/*
 		Function: generateClientScript
 		
@@ -161,17 +174,10 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 	*/
 	function generateClientScript()
 	{
-		if (false === $this->bDeferScriptGeneration || 'deferred' === $this->bDeferScriptGeneration) {
-			if (0 < count($this->aFunctions)) {
-				echo "\n<script type='text/javascript' " . $this->sDefer . "charset='UTF-8'>\n";
-				echo "/* <![CDATA[ */\n";
-
-				foreach (array_keys($this->aFunctions) as $sKey)
-					$this->aFunctions[$sKey]->generateClientScript($this->sXajaxPrefix);
-
-				echo "/* ]]> */\n";
-				echo "</script>\n";
-			}
+		if (0 < count($this->aFunctions))
+		{
+			foreach (array_keys($this->aFunctions) as $sKey)
+				$this->aFunctions[$sKey]->generateClientScript($this->sXajaxPrefix);
 		}
 	}
 
@@ -217,7 +223,8 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		{
 			$xuf = $this->aFunctions[$sKey];
 
-			if ($xuf->getName() == $this->sRequestedFunction) {
+			if ($xuf->getName() == $this->sRequestedFunction)
+			{
 				$xuf->call($aArgs);
 				return true;
 			}

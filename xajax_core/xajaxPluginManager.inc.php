@@ -31,48 +31,86 @@ final class xajaxPluginManager
 		Array: aRequestPlugins
 	*/
 	private $aRequestPlugins;
-
+	
 	/*
 		Array: aResponsePlugins
 	*/
 	private $aResponsePlugins;
-
+	
 	/*
 		Array: aConfigurable
 	*/
 	private $aConfigurable;
-
+	
 	/*
 		Array: aRegistrars
 	*/
 	private $aRegistrars;
-
+	
 	/*
 		Array: aProcessors
 	*/
 	private $aProcessors;
-
+	
 	/*
 		Array: aClientScriptGenerators
 	*/
 	private $aClientScriptGenerators;
-
+	
 	/*
 		Function: xajaxPluginManager
 		
 		Construct and initialize the one and only xajax plugin manager.
 	*/
+
+	private $sJsURI;
+	public  $aJsFiles = array();
+	private $sDefer;
+	private $sRequestURI;
+	private $sStatusMessages;
+	private $sWaitCursor;
+	private $sVersion;
+	private $sDefaultMode;
+	private $sDefaultMethod;
+	private $bDebug;
+	private $bVerboseDebug;
+	private $nScriptLoadTimeout;
+	private $bUseUncompressedScripts;
+	private $bDeferScriptGeneration;
+	private $sLanguage;
+	private $nResponseQueueSize;
+	private $sDebugOutputID;
+	private $sResponseType;
+
 	private function __construct()
 	{
 		$this->aRequestPlugins = array();
 		$this->aResponsePlugins = array();
-
+		
 		$this->aConfigurable = array();
 		$this->aRegistrars = array();
 		$this->aProcessors = array();
 		$this->aClientScriptGenerators = array();
-	}
 
+		$this->sJsURI = '';
+		$this->aJsFiles = array();
+		$this->sDefer = '';
+		$this->sRequestURI = '';
+		$this->sStatusMessages = 'false';
+		$this->sWaitCursor = 'true';
+		$this->sVersion = 'unknown';
+		$this->sDefaultMode = 'asynchronous';
+		$this->sDefaultMethod = 'POST';	// W3C: Method is case sensitive
+		$this->bDebug = false;
+		$this->bVerboseDebug = false;
+		$this->nScriptLoadTimeout = 2000;
+		$this->bUseUncompressedScripts = false;
+		$this->bDeferScriptGeneration = false;
+		$this->sLanguage = null;
+		$this->nResponseQueueSize = null;
+		$this->sDebugOutputID = null;
+	}
+	
 	/*
 		Function: getInstance
 		
@@ -88,11 +126,11 @@ final class xajaxPluginManager
 	{
 		static $obj;
 		if (!$obj) {
-			$obj = new xajaxPluginManager();
+			$obj = new xajaxPluginManager();    
 		}
 		return $obj;
 	}
-
+	
 	/*
 		Function: loadPlugins
 		
@@ -105,23 +143,23 @@ final class xajaxPluginManager
 	{
 		foreach ($aFolders as $sFolder) {
 			if (is_dir($sFolder))
-				if ($handle = opendir($sFolder)) {
-					while (!(false === ($sName = readdir($handle)))) {
-						$nLength = strlen($sName);
-						if (8 < $nLength) {
-							$sFileName = substr($sName, 0, $nLength - 8);
-							$sExtension = substr($sName, $nLength - 8, 8);
-							if ('.inc.php' == $sExtension) {
-								require $sFolder . '/' . $sFileName . $sExtension;
-							}
+			if ($handle = opendir($sFolder)) {
+				while (!(false === ($sName = readdir($handle)))) {
+					$nLength = strlen($sName);
+					if (8 < $nLength) {
+						$sFileName = substr($sName, 0, $nLength - 8);
+						$sExtension = substr($sName, $nLength - 8, 8);
+						if ('.inc.php' == $sExtension) {
+							require $sFolder . '/' . $sFileName . $sExtension;
 						}
 					}
-
-					closedir($handle);
 				}
+				
+				closedir($handle);
+			}
 		}
 	}
-
+	
 	/*
 		Function: _insertIntoArray
 		
@@ -142,10 +180,10 @@ final class xajaxPluginManager
 	{
 		while (isset($aPlugins[$nPriority]))
 			$nPriority++;
-
+		
 		$aPlugins[$nPriority] = $objPlugin;
 	}
-
+	
 	/*
 		Function: registerPlugin
 		
@@ -161,34 +199,36 @@ final class xajaxPluginManager
 		1000 thru 8999: User created plugins, typically, these plugins don't care about order
 		9000 thru 9999: Plugins that generally need to be last or near the end of the plugin list
 	*/
-	public function registerPlugin($objPlugin, $nPriority = 1000)
+	public function registerPlugin($objPlugin, $nPriority=1000)
 	{
-		if ($objPlugin instanceof xajaxRequestPlugin) {
+		if ($objPlugin instanceof xajaxRequestPlugin)
+		{
 			$this->_insertIntoArray($this->aRequestPlugins, $objPlugin, $nPriority);
-
+			
 			if (method_exists($objPlugin, 'register'))
 				$this->_insertIntoArray($this->aRegistrars, $objPlugin, $nPriority);
-
+			
 			if (method_exists($objPlugin, 'canProcessRequest'))
 				if (method_exists($objPlugin, 'processRequest'))
 					$this->_insertIntoArray($this->aProcessors, $objPlugin, $nPriority);
 		}
-		else if ($objPlugin instanceof xajaxResponsePlugin) {
+		else if ( $objPlugin instanceof xajaxResponsePlugin)
+		{
 			$this->aResponsePlugins[] = $objPlugin;
 		}
 		else
 		{
-			//SkipDebug
+//SkipDebug
 			$objLanguageManager = xajaxLanguageManager::getInstance();
 			trigger_error(
-				$objLanguageManager->getText('XJXPM:IPLGERR:01')
-					. get_class($objPlugin)
-					. $objLanguageManager->getText('XJXPM:IPLGERR:02')
+				$objLanguageManager->getText('XJXPM:IPLGERR:01') 
+				. get_class($objPlugin) 
+				. $objLanguageManager->getText('XJXPM:IPLGERR:02')
 				, E_USER_ERROR
-			);
-			//EndSkipDebug
+				);
+//EndSkipDebug
 		}
-
+		
 		if (method_exists($objPlugin, 'configure'))
 			$this->_insertIntoArray($this->aConfigurable, $objPlugin, $nPriority);
 
@@ -207,24 +247,22 @@ final class xajaxPluginManager
 	*/
 	public function canProcessRequest()
 	{
-		$bHandled = false;
 
 		$aKeys = array_keys($this->aProcessors);
 		sort($aKeys);
 		foreach ($aKeys as $sKey) {
 			$mResult = $this->aProcessors[$sKey]->canProcessRequest();
 			if (true === $mResult)
-				$bHandled = true;
+				return true;
 			else if (is_string($mResult))
 				return $mResult;
 		}
-
-		return $bHandled;
+		return false;
 	}
 
 	/*
 		Function: processRequest
-		
+
 		Calls each of the request plugins to request that they process the
 		current request.  If the plugin processes the request, it will
 		return true.
@@ -232,7 +270,7 @@ final class xajaxPluginManager
 	public function processRequest()
 	{
 		$bHandled = false;
-
+		
 		$aKeys = array_keys($this->aProcessors);
 		sort($aKeys);
 		foreach ($aKeys as $sKey) {
@@ -245,7 +283,7 @@ final class xajaxPluginManager
 
 		return $bHandled;
 	}
-
+	
 	/*
 		Function: configure
 		
@@ -259,12 +297,64 @@ final class xajaxPluginManager
 	*/
 	public function configure($sName, $mValue)
 	{
+
+
 		$aKeys = array_keys($this->aConfigurable);
 		sort($aKeys);
 		foreach ($aKeys as $sKey)
 			$this->aConfigurable[$sKey]->configure($sName, $mValue);
-	}
 
+		if ('javascript URI' == $sName) {
+			$this->sJsURI = $mValue;
+		} else if ("javascript files" == $sName) {
+			$this->aJsFiles = array_merge($this->aJsFiles,$mValue);
+		} else if ("scriptDefferal" == $sName) {
+			if (true === $mValue) $this->sDefer = "defer ";
+			else $this->sDefer = "";
+		} else if ("requestURI" == $sName) {
+			$this->sRequestURI = $mValue;
+		} else if ("statusMessages" == $sName) {
+			if (true === $mValue) $this->sStatusMessages = "true";
+			else $this->sStatusMessages = "false";
+		} else if ("waitCursor" == $sName) {
+			if (true === $mValue) $this->sWaitCursor = "true";
+			else $this->sWaitCursor = "false";
+		} else if ("version" == $sName) {
+			$this->sVersion = $mValue;
+		} else if ("defaultMode" == $sName) {
+			if ("asynchronous" == $mValue || "synchronous" == $mValue)
+				$this->sDefaultMode = $mValue;
+		} else if ("defaultMethod" == $sName) {
+			if ("POST" == $mValue || "GET" == $mValue)	// W3C: Method is case sensitive
+				$this->sDefaultMethod = $mValue;
+		} else if ("debug" == $sName) {
+			if (true === $mValue || false === $mValue)
+				$this->bDebug = $mValue;
+		} else if ("verboseDebug" == $sName) {
+			if (true === $mValue || false === $mValue)
+				$this->bVerboseDebug = $mValue;
+		} else if ("scriptLoadTimeout" == $sName) {
+			$this->nScriptLoadTimeout = $mValue;
+		} else if ("useUncompressedScripts" == $sName) {
+			if (true === $mValue || false === $mValue)
+				$this->bUseUncompressedScripts = $mValue;
+		} else if ('deferScriptGeneration' == $sName) {
+			if (true === $mValue || false === $mValue)
+				$this->bDeferScriptGeneration = $mValue;
+			else if ('deferred' == $mValue)
+				$this->bDeferScriptGeneration = $mValue;
+		} else if ('language' == $sName) {
+			$this->sLanguage = $mValue;
+		} else if ('responseQueueSize' == $sName) {
+			$this->nResponseQueueSize = $mValue;
+		} else if ('debugOutputID' == $sName) {
+			$this->sDebugOutputID = $mValue;
+		} else if ('responseType' == $sName) {
+			$this->sResponseType = $mValue;
+		}
+
+	}
+	
 	/*
 		Function: register
 		
@@ -282,7 +372,7 @@ final class xajaxPluginManager
 		{
 			$objPlugin = $this->aRegistrars[$sKey];
 			$mResult = $objPlugin->register($aArgs);
-			if ($mResult instanceof xajaxRequest)
+			if ( $mResult instanceof xajaxRequest )
 				return $mResult;
 			if (is_array($mResult))
 				return $mResult;
@@ -290,14 +380,34 @@ final class xajaxPluginManager
 				if (true === $mResult)
 					return true;
 		}
-		//SkipDebug
+//SkipDebug
 		$objLanguageManager = xajaxLanguageManager::getInstance();
 		trigger_error(
-			$objLanguageManager->getText('XJXPM:MRMERR:01')
-				. print_r($aArgs, true)
+			$objLanguageManager->getText('XJXPM:MRMERR:01') 
+			. print_r($aArgs, true)
 			, E_USER_ERROR
-		);
-		//EndSkipDebug
+			);
+//EndSkipDebug
+	}
+
+	/*
+		Function: _getScriptFilename
+
+		Returns the name of the script file, based on the current settings.
+
+		sFilename - (string):  The base filename.
+
+		Returns:
+
+		string - The filename as it should be specified in the script tags
+		on the browser.
+	*/
+	private function _getScriptFilename($sFilename)
+	{
+		if ($this->bUseUncompressedScripts) {
+			return str_replace('.js', '_uncompressed.js', $sFilename);
+		}
+		return $sFilename;
 	}
 
 	/*
@@ -310,10 +420,245 @@ final class xajaxPluginManager
 	*/
 	public function generateClientScript()
 	{
+
+		$sJsURI = $this->sJsURI;
+
+		$aJsFiles = $this->aJsFiles;
+
+		if ($sJsURI != '' && substr($sJsURI, -1) != '/')
+			$sJsURI .= '/';
+		if ('' == $sJsURI) { $sJsURI = 'xajax_js/';}
+
+		$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_core.js'), 'xajax');
+
+		if (true === $this->bDebug)
+			$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_debug.js'), 'xajax.debug');
+
+		if (true === $this->bVerboseDebug)
+			$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_verbose.js'), 'xajax.debug.verbose');
+
+		if (null !== $this->sLanguage)
+			$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_lang_' . $this->sLanguage . '.js'), 'xajax');
+
+		$sCrLf = "\n";
+		echo $sCrLf;
+		echo '<';
+		echo 'script type="text/javascript" ';
+		echo $this->sDefer;
+		echo 'charset="UTF-8">';
+		echo $sCrLf;
+		echo '/* <';
+		echo '![CDATA[ */';
+		echo $sCrLf;
+		echo 'try { if (undefined == typeof xajax.config) xajax.config = {};  } catch (e) { xajax = {}; xajax.config = {};  };';
+		echo $sCrLf;
+		echo 'xajax.config.requestURI = "';
+		echo $this->sRequestURI;
+		echo '";';
+		echo $sCrLf;
+		echo 'xajax.config.statusMessages = ';
+		echo $this->sStatusMessages;
+		echo ';';
+		echo $sCrLf;
+		echo 'xajax.config.waitCursor = ';
+		echo $this->sWaitCursor;
+		echo ';';
+		echo $sCrLf;
+		echo 'xajax.config.version = "';
+		echo $this->sVersion;
+		echo '";';
+		echo $sCrLf;
+		echo 'xajax.config.defaultMode = "';
+		echo $this->sDefaultMode;
+		echo '";';
+		echo $sCrLf;
+		echo 'xajax.config.defaultMethod = "';
+		echo $this->sDefaultMethod;
+		echo '";';
+		echo $sCrLf;
+		echo 'xajax.config.JavaScriptURI = "';
+		echo $this->sJsURI;
+		echo '";';
+		echo $sCrLf;
+		echo 'xajax.config.responseType = "';
+		echo $this->sResponseType;
+		echo '";';
+
+		if (false === (null === $this->nResponseQueueSize))
+		{
+			echo $sCrLf;
+			echo 'xajax.config.responseQueueSize = ';
+			echo $this->nResponseQueueSize;
+			echo ';';
+		}
+
+		if (true === $this->bDebug)
+		{
+			if (false === (null === $this->sDebugOutputID))
+			{
+				echo $sCrLf;
+				echo 'xajax.debug = {};';
+				echo $sCrLf;
+				echo 'xajax.debug.outputID = "';
+				echo $this->sDebugOutputID;
+				echo '";';
+			}
+		}
+		if (0 < $this->nScriptLoadTimeout) {
+			foreach ($aJsFiles as $aJsFile) {
+				//				echo '<';
+				//				echo 'script type="text/javascript" ';
+				//				echo $this->sDefer;
+				//				echo 'charset="UTF-8">';
+				echo $sCrLf;
+				echo '/* <';
+				echo '![CDATA[ */';
+				echo $sCrLf;
+				echo 'window.setTimeout(';
+				echo $sCrLf;
+				echo ' function() {';
+				echo $sCrLf;
+				echo '  var scriptExists = false;';
+				echo $sCrLf;
+				echo '  try { if (';
+				echo $aJsFile[1];
+				echo '.isLoaded) scriptExists = true; }';
+				echo $sCrLf;
+				echo '  catch (e) {}';
+				echo $sCrLf;
+				echo '  if (!scriptExists) {';
+				echo $sCrLf;
+				echo '   alert("Error: the ';
+				echo $aJsFile[1];
+				echo ' Javascript component could not be included. Perhaps the URL is incorrect?\nURL: ';
+				echo $sJsURI;
+				echo $aJsFile[0];
+				echo '");';
+				echo $sCrLf;
+				echo '  }';
+				echo $sCrLf;
+				echo ' }, ';
+				echo $this->nScriptLoadTimeout;
+				echo ');';
+				echo $sCrLf;
+				//				echo '/* ]]> */';
+				//				echo $sCrLf;
+				//				echo '<';
+				//				echo '/script>';
+				//				echo $sCrLf;
+			}
+		}
+
+		echo $sCrLf;
+		echo '/* ]]> */';
+		echo $sCrLf;
+		echo '<';
+		echo '/script>';
+		echo $sCrLf;
+
+
+		if (true === $this->bDeferScriptGeneration)
+		{
+
+			$sHash = $this->generateHash();
+
+			$sOutFile = $sHash.'.js';
+			$sOutPath = dirname(dirname(__FILE__)).'/xajax_js/deferred/';
+
+			if (!is_file($sOutPath.$sOutFile) )
+			{
+				ob_start();
+
+				print $this->printPluginScripts();
+				print $sCrLf;
+
+				$sInPath = dirname(dirname(__FILE__)).'/';
+
+				foreach ($aJsFiles as $aJsFile) {
+
+					print file_get_contents($sInPath.$aJsFile[0]);
+				}
+
+				$sScriptCode = stripslashes(ob_get_clean());
+
+				require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
+				$sScriptCode = xajaxCompressFile( $sScriptCode );
+
+				file_put_contents($sOutPath.$sOutFile,$sScriptCode);
+			}
+
+
+
+			echo '<';
+			echo 'script type="text/javascript" src="';
+			echo $sJsURI;
+			echo 'deferred/';
+			echo $sOutFile;
+			echo '" ';
+			echo $this->sDefer;
+			echo 'charset="UTF-8"><';
+			echo '/script>';
+			echo $sCrLf;
+
+
+
+		} else {
+
+
+
+			echo $sCrLf;
+			echo '<';
+			echo 'script type="text/javascript" ';
+			echo $this->sDefer;
+			echo 'charset="UTF-8">';
+			echo $sCrLf;
+			echo '/* <';
+			echo '![CDATA[ */';
+			echo $sCrLf;
+
+			$this->printPluginScripts();
+
+			echo $sCrLf;
+			echo '/* ]]> */';
+			echo $sCrLf;
+			echo '<';
+			echo '/script>';
+			echo $sCrLf;
+
+			foreach ($aJsFiles as $aJsFile) {
+				echo '<';
+				echo 'script type="text/javascript" src="';
+				echo $sJsURI;
+				echo $aJsFile[0];
+				echo '" ';
+				echo $this->sDefer;
+				echo 'charset="UTF-8"><';
+				echo '/script>';
+				echo $sCrLf;
+			}
+		}
+	}
+
+	private function generateHash()
+	{
+		$aKeys = array_keys($this->aClientScriptGenerators);
+		sort($aKeys);
+		$sHash = '';
+		foreach ($aKeys as $sKey)
+		{
+			$sHash .= $this->aClientScriptGenerators[$sKey]->generateHash();
+		}
+		return md5($sHash);
+	}
+
+	private function printPluginScripts()
+	{
 		$aKeys = array_keys($this->aClientScriptGenerators);
 		sort($aKeys);
 		foreach ($aKeys as $sKey)
+		{
 			$this->aClientScriptGenerators[$sKey]->generateClientScript();
+		}
 	}
 
 	/*
@@ -333,7 +678,7 @@ final class xajaxPluginManager
 		$aKeys = array_keys($this->aResponsePlugins);
 		sort($aKeys);
 		foreach ($aKeys as $sKey)
-			if ($this->aResponsePlugins[$sKey] instanceof  $sName)
+			if ( $this->aResponsePlugins[$sKey] instanceof  $sName )
 				return $this->aResponsePlugins[$sKey];
 		$bFailure = false;
 		return $bFailure;
@@ -356,10 +701,10 @@ final class xajaxPluginManager
 		$aKeys = array_keys($this->aRequestPlugins);
 		sort($aKeys);
 		foreach ($aKeys as $sKey) {
-			if (get_class($this->aRequestPlugins[$sKey]) == $sName) {
+			if ( get_class($this->aRequestPlugins[$sKey]) ==  $sName ) {
 				return $this->aRequestPlugins[$sKey];
-			}
-		}
+			} 
+		}	
 
 
 		$bFailure = false;

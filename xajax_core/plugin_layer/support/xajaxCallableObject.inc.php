@@ -34,7 +34,7 @@ final class xajaxCallableObject
 		A reference to the callable object.
 	*/
 	private $obj;
-
+	
 	/*
 		Array: aConfiguration
 		
@@ -44,7 +44,7 @@ final class xajaxCallableObject
 		passed to the client browser when the function stubs are generated.
 	*/
 	private $aConfiguration;
-
+	
 	/*
 		Function: xajaxCallableObject
 		
@@ -57,7 +57,7 @@ final class xajaxCallableObject
 		$this->obj = $obj;
 		$this->aConfiguration = array();
 	}
-
+	
 	/*
 		Function: getName
 		
@@ -67,6 +67,17 @@ final class xajaxCallableObject
 	public function getName()
 	{
 		return get_class($this->obj);
+	}
+
+
+	public function getMethods()
+	{
+		$aReturn = array();
+		foreach (get_class_methods($this->obj) as $sMethodName)
+		{
+			$aReturn[] =  $sMethodName;
+		}
+		return $aReturn;
 	}
 
 	/*
@@ -81,10 +92,10 @@ final class xajaxCallableObject
 	public function configure($sMethod, $sName, $sValue)
 	{
 		$sMethod = strtolower($sMethod);
-
+		
 		if (false == isset($this->aConfiguration[$sMethod]))
 			$this->aConfiguration[$sMethod] = array();
-
+			
 		$this->aConfiguration[$sMethod][$sName] = $sValue;
 	}
 
@@ -102,9 +113,9 @@ final class xajaxCallableObject
 	public function generateRequests($sXajaxPrefix)
 	{
 		$aRequests = array();
-
+		
 		$sClass = get_class($this->obj);
-
+		
 		foreach (get_class_methods($this->obj) as $sMethodName)
 		{
 			$bInclude = true;
@@ -116,13 +127,13 @@ final class xajaxCallableObject
 			if ($sClass == $sMethodName)
 				$bInclude = false;
 			if ($bInclude)
-				$aRequests[strtolower($sMethodName)] =
+				$aRequests[strtolower($sMethodName)] = 
 					new xajaxRequest("{$sXajaxPrefix}{$sClass}.{$sMethodName}");
 		}
 
 		return $aRequests;
 	}
-
+	
 	/*
 		Function: generateClientScript
 		
@@ -131,13 +142,13 @@ final class xajaxCallableObject
 
 		sXajaxPrefix - (string):  The prefix to be prepended to the
 			javascript function names.
-	*/
+	*/	
 	public function generateClientScript($sXajaxPrefix)
 	{
 		$sClass = get_class($this->obj);
-
+		
 		echo "{$sXajaxPrefix}{$sClass} = {};\n";
-
+		
 		foreach (get_class_methods($this->obj) as $sMethodName)
 		{
 			$bInclude = true;
@@ -148,12 +159,13 @@ final class xajaxCallableObject
 			// exclude constructor
 			if ($sClass == $sMethodName)
 				$bInclude = false;
-			if ($bInclude) {
+			if ($bInclude)
+			{
 				echo "{$sXajaxPrefix}{$sClass}.{$sMethodName} = function() { ";
 				echo "return xajax.request( ";
 				echo "{ xjxcls: '{$sClass}', xjxmthd: '{$sMethodName}' }, ";
 				echo "{ parameters: arguments";
-
+				
 				$sSeparator = ", ";
 				if (isset($this->aConfiguration['*']))
 					foreach ($this->aConfiguration['*'] as $sKey => $sValue)
@@ -167,7 +179,7 @@ final class xajaxCallableObject
 			}
 		}
 	}
-
+	
 	/*
 		Function: isClass
 		
@@ -187,7 +199,7 @@ final class xajaxCallableObject
 			return true;
 		return false;
 	}
-
+	
 	/*
 		Function: hasMethod
 		
@@ -205,7 +217,7 @@ final class xajaxCallableObject
 	{
 		return method_exists($this->obj, $sMethod) || method_exists($this->obj, "__call");
 	}
-
+	
 	/*
 		Function: call
 		
@@ -222,7 +234,7 @@ final class xajaxCallableObject
 			call_user_func_array(
 				array($this->obj, $sMethod),
 				$aArgs
-			)
-		);
+				)
+			);
 	}
 }
