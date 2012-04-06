@@ -71,35 +71,24 @@ class clsSwfUpload
 		}
 	}
 
+	function generateHash()
+	{
+		return ('SWFuploadPlugin');
+	}
+
+
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 	public function generateClientScript()
 	{
-		echo "\n<script type='text/javascript' ".$this->sDefer."charset='UTF-8'>\n";
-		echo "/* <![CDATA[ */\n";
 		echo "if (undefined == xajax.ext)	xajax.ext = {};\n";
 		echo "xajax.ext.SWFupload = {};";
 		echo "xajax.ext.SWFupload.config = {};\n";
 		echo "xajax.ext.SWFupload.config.javascript_URI='".$this->sJavascriptURI."xajax_plugins/response/swfupload/';\n";
 		echo "xajax.ext.SWFupload.config.FadeTimeOut = '".$this->SWFupload_FadeTimeOut."';\n";
-		echo "/* ]]> */\n";
-		echo "</script>\n";
 
-		if ( $this->bInlineScript )
-		{
-			echo "\n<script type='text/javascript' ".$this->sDefer."charset='UTF-8'>\n";
-			echo "/* <![CDATA[ */\n";
-
-			include( dirname( __FILE__ ).'xajax_plugins/response/swfupload/swfupload.js' );
-			include( dirname( __FILE__ ).'xajax_plugins/response/swfupload/swfupload.xajax.js' );
-
-			echo "/* ]]> */\n";
-			echo "</script>\n";
-		}else
-		{
-			echo "\n<script type='text/javascript' src='".$this->sJavascriptURI."xajax_plugins/response/swfupload/swfupload.js' ".$this->sDefer."charset='UTF-8'></script>\n";
-			echo "\n<script type='text/javascript' src='".$this->sJavascriptURI."xajax_plugins/response/swfupload/swfupload.xajax.js' ".$this->sDefer."charset='UTF-8'></script>\n";
-		}
+		include( dirname( __FILE__ ).'/swfupload.js' );
+		include( dirname( __FILE__ ).'/swfupload.xajax.js' );
 	}
 
 	//--------------------------------------------------------------------------------------------------------------------------------
