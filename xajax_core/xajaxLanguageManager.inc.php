@@ -35,14 +35,14 @@ final class xajaxLanguageManager
 		An array of the currently registered languages.
 	*/
 	private $aMessages;
-	
+
 	/*
 		String: sLanguage
 		
 		The currently configured language.
 	*/
 	private $sLanguage;
-	
+
 	/*
 		Function: xajaxLanguageManager
 		
@@ -51,7 +51,7 @@ final class xajaxLanguageManager
 	private function __construct()
 	{
 		$this->aMessages = array();
-		
+
 		$this->aMessages['en'] = array(
 			'LOGHDR:01' => '** xajax Error Log - ',
 			'LOGHDR:02' => " **\n",
@@ -109,12 +109,13 @@ final class xajaxLanguageManager
 			'XJXRSP:MXCEERR' => 'Error: Cannot mix character encodings in a single response.',
 			'XJXRSP:MXOEERR' => 'Error: Cannot mix output entities (true/false) in a single response.',
 			'XJXRM:IRERR' => 'An invalid response was returned while processing this request.',
-			'XJXRM:MXRTERR' => 'Error:  You cannot mix response types while processing a single request: '
-			);
-			
+			'XJXRM:MXRTERR' => 'Error:  You cannot mix response types while processing a single request: ',
+			'XJXRSP:IRSPERR' => 'Error: Invalid response type'
+		);
+
 		$this->sLanguage = 'en';
 	}
-	
+
 	/*
 		Function: getInstance
 		
@@ -129,7 +130,7 @@ final class xajaxLanguageManager
 		}
 		return $obj;
 	}
-	
+
 	/*
 		Function: configure
 		
@@ -151,7 +152,7 @@ final class xajaxLanguageManager
 			}
 		}
 	}
-	
+
 	/*
 		Function: register
 		
@@ -162,10 +163,11 @@ final class xajaxLanguageManager
 		sLanguage - (string): the character code which represents the language being registered.
 		aMessages - (array): the array of translated debug and error messages
 	*/
-	public function register($sLanguage, $aMessages) {
+	public function register($sLanguage, $aMessages)
+	{
 		$this->aMessages[$sLanguage] = $aMessages;
 	}
-	
+
 	/*
 		Function: getText
 		
@@ -177,9 +179,9 @@ final class xajaxLanguageManager
 	public function getText($sMessage)
 	{
 		if (isset($this->aMessages[$this->sLanguage]))
-			 if (isset($this->aMessages[$this->sLanguage][$sMessage]))
+			if (isset($this->aMessages[$this->sLanguage][$sMessage]))
 				return $this->aMessages[$this->sLanguage][$sMessage];
-				
+
 		return '(Unknown language or message identifier)'
 			. $this->sLanguage
 			. '::'

@@ -74,6 +74,6 @@ $objLanguageManager->register('nl', array(
 	'XJXRSP:MXOEERR' => 'Fout: kan geen output entities (true/false) in een enkele teruggave verwerken.',
 	'XJXRM:IRERR' => 'Een ongeldig antwoord is geretourneerd tijdens het verwerken van deze aanvraag.',
 	'XJXRM:MXRTERR' => 'Fout: Kan geen meerdere typen verwisselen tijdens het verwerken van een enkele aanvraag: '
-	));
+));
 
 //EndSkipAIO

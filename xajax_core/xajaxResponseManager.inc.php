@@ -35,22 +35,22 @@ final class xajaxResponseManager
 		once the request processing phase is complete.
 	*/
 	private $objResponse;
-	
+
 	/*
 		String: sCharacterEncoding
 	*/
 	private $sCharacterEncoding;
-	
+
 	/*
 		Boolean: bOutputEntities
 	*/
 	private $bOutputEntities;
-	
+
 	/*
 		Array: aDebugMessages
 	*/
 	private $aDebugMessages;
-	
+
 	/*
 		Function: xajaxResponseManager
 		
@@ -61,7 +61,7 @@ final class xajaxResponseManager
 		$this->objResponse = NULL;
 		$this->aDebugMessages = array();
 	}
-	
+
 	/*
 		Function: getInstance
 		
@@ -76,7 +76,7 @@ final class xajaxResponseManager
 		}
 		return $obj;
 	}
-	
+
 	/*
 		Function: configure
 		
@@ -90,32 +90,27 @@ final class xajaxResponseManager
 	*/
 	public function configure($sName, $mValue)
 	{
-		if ('characterEncoding' == $sName)
-		{
+		if ('characterEncoding' == $sName) {
 			$this->sCharacterEncoding = $mValue;
-			
+
 			if (isset($this->objResponse))
 				$this->objResponse->setCharacterEncoding($this->sCharacterEncoding);
 		}
-		else if ('contentType' == $sName)
-		{
+		else if ('contentType' == $sName) {
 			if (isset($this->objResponse))
 				$this->objResponse->setContentType($mValue);
 		}
-		else if ('outputEntities' == $sName)
-		{
-			if (true === $mValue || false === $mValue)
-			{
+		else if ('outputEntities' == $sName) {
+			if (true === $mValue || false === $mValue) {
 				$this->bOutputEntities = $mValue;
-				
+
 				if (isset($this->objResponse))
 					$this->objResponse->setOutputEntities($this->bOutputEntities);
 			}
 		}
 		$this->aSettings[$sName] = $mValue;
-	
-	}
 
+	}
 
 
 	/*
@@ -132,14 +127,14 @@ final class xajaxResponseManager
 		
 		$mValue : (mixed):  The value of the setting if set, null otherwise.
 	*/
-	
+
 	public function getConfiguration($sName)
 	{
 		if (isset($this->aSettings[$sName]))
 			return $this->aSettings[$sName];
 		return NULL;
 	}
-	
+
 	/*
 		Function: clear
 		
@@ -150,7 +145,7 @@ final class xajaxResponseManager
 	{
 		$this->objResponse = NULL;
 	}
-	
+
 	/*
 		Function: append
 		
@@ -169,40 +164,40 @@ final class xajaxResponseManager
 	*/
 	public function append($mResponse)
 	{
-		if ( $mResponse instanceof xajaxResponse ) {
+		if ($mResponse instanceof xajaxResponse) {
 			if (NULL == $this->objResponse) {
 				$this->objResponse = $mResponse;
-			} else if ( $this->objResponse instanceof xajaxResponse ) {
+			} else if ($this->objResponse instanceof xajaxResponse) {
 				if ($this->objResponse != $mResponse)
 					$this->objResponse->appendResponse($mResponse);
 			} else {
 				$objLanguageManager = xajaxLanguageManager::getInstance();
 				$this->debug(
-					$objLanguageManager->getText('XJXRM:MXRTERR') 
-					. get_class($this->objResponse) 
-					. ')'
-					);
+					$objLanguageManager->getText('XJXRM:MXRTERR')
+						. get_class($this->objResponse)
+						. ')'
+				);
 			}
-		} else if ( $mResponse instanceof xajaxCustomResponse ) {
+		} else if ($mResponse instanceof xajaxCustomResponse) {
 			if (NULL == $this->objResponse) {
 				$this->objResponse = $mResponse;
-			} else if ( $this->objResponse instanceof xajaxCustomResponse ) {
+			} else if ($this->objResponse instanceof xajaxCustomResponse) {
 				if ($this->objResponse != $mResponse)
 					$this->objResponse->appendResponse($mResponse);
 			} else {
 				$objLanguageManager = xajaxLanguageManager::getInstance();
 				$this->debug(
-					$objLanguageManager->getText('XJXRM:MXRTERR') 
-					. get_class($this->objResponse) 
-					. ')'
-					);
+					$objLanguageManager->getText('XJXRM:MXRTERR')
+						. get_class($this->objResponse)
+						. ')'
+				);
 			}
 		} else {
 			$objLanguageManager = xajaxLanguageManager::getInstance();
 			$this->debug($objLanguageManager->getText('XJXRM:IRERR'));
 		}
 	}
-	
+
 	/*
 		Function: debug
 		
@@ -218,7 +213,7 @@ final class xajaxResponseManager
 	{
 		$this->aDebugMessages[] = $sMessage;
 	}
-	
+
 	/*
 		Function: send
 		
@@ -233,7 +228,7 @@ final class xajaxResponseManager
 			$this->objResponse->printOutput();
 		}
 	}
-	
+
 	/*
 		Function: getCharacterEncoding
 		
@@ -246,7 +241,7 @@ final class xajaxResponseManager
 	{
 		return $this->sCharacterEncoding;
 	}
-	
+
 	/*
 		Function: getOutputEntities
 		

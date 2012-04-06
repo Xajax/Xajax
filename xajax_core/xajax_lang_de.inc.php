@@ -83,6 +83,6 @@ $objLanguageManager->register('de', array(
 	'XJXRSP:MXOEERR' => 'Fehler: Kann keine output entities (true/false) in ener einzelnen Antwort verarbeiten.',
 	'XJXRM:IRERR' => 'Ungültige Antwort erhalten während der Ausführung der Anfrage.',
 	'XJXRM:MXRTERR' => 'Fehler: Kann kkeine verschiedenen reponse types benutzen während der Ausführung einer Anfrage: '
-	));
+));
 
 //EndSkipAIO

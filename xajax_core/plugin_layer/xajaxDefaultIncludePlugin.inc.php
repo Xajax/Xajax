@@ -45,7 +45,6 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 	private $sLanguage;
 	private $nResponseQueueSize;
 	private $sDebugOutputID;
-	private $sResponseType;
 
 	public function xajaxIncludeClientScriptPlugin()
 	{
@@ -57,7 +56,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 		$this->sWaitCursor = 'true';
 		$this->sVersion = 'unknown';
 		$this->sDefaultMode = 'asynchronous';
-		$this->sDefaultMethod = 'POST';	// W3C: Method is case sensitive
+		$this->sDefaultMethod = 'POST'; // W3C: Method is case sensitive
 		$this->bDebug = false;
 		$this->bVerboseDebug = false;
 		$this->nScriptLoadTimeout = 2000;
@@ -94,7 +93,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 			if ("asynchronous" == $mValue || "synchronous" == $mValue)
 				$this->sDefaultMode = $mValue;
 		} else if ("defaultMethod" == $sName) {
-			if ("POST" == $mValue || "GET" == $mValue)	// W3C: Method is case sensitive
+			if ("POST" == $mValue || "GET" == $mValue) // W3C: Method is case sensitive
 				$this->sDefaultMethod = $mValue;
 		} else if ("debug" == $sName) {
 			if (true === $mValue || false === $mValue)
@@ -118,10 +117,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 			$this->nResponseQueueSize = $mValue;
 		} else if ('debugOutputID' == $sName) {
 			$this->sDebugOutputID = $mValue;
-		} else if ('responseType' == $sName) {
-			$this->sResponseType = $mValue;
 		}
-
 	}
 
 	/*
@@ -129,17 +125,14 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 	*/
 	public function generateClientScript()
 	{
-		if (false === $this->bDeferScriptGeneration)
-		{
+		if (false === $this->bDeferScriptGeneration) {
 			$this->printJavascriptConfig();
 			$this->printJavascriptInclude();
 		}
-		else if (true === $this->bDeferScriptGeneration)
-		{
+		else if (true === $this->bDeferScriptGeneration) {
 			$this->printJavascriptInclude();
 		}
-		else if ('deferred' == $this->bDeferScriptGeneration)
-		{
+		else if ('deferred' == $this->bDeferScriptGeneration) {
 			$this->printJavascriptConfig();
 		}
 	}
@@ -161,7 +154,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 		$this->printJavascriptConfig();
 		return ob_get_clean();
 	}
-	
+
 	/*
 		Function: printJavascriptConfig
 		
@@ -170,11 +163,12 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 	public function printJavascriptConfig()
 	{
 		$sCrLf = "\n";
-		
+
 		$sJsURI = $this->sJsURI;
 
-		if ($sJsURI != '' && substr($sJsURI, -1) != '/') 
+		if ($sJsURI != '' && substr($sJsURI, -1) != '/')
 			$sJsURI .= '/';
+
 		echo $sCrLf;
 		echo '<';
 		echo 'script type="text/javascript" ';
@@ -184,7 +178,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 		echo '/* <';
 		echo '![CDATA[ */';
 		echo $sCrLf;
-		echo 'try { if (undefined == typeof xajax.config) xajax.config = {};  } catch (e) { xajax = {}; xajax.config = {};  };';
+		echo 'try { if (undefined == xajax.config) xajax.config = {}; } catch (e) { xajax = {}; xajax.config = {}; };';
 		echo $sCrLf;
 		echo 'xajax.config.requestURI = "';
 		echo $this->sRequestURI;
@@ -213,23 +207,17 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 		echo 'xajax.config.JavaScriptURI = "';
 		echo $this->sJsURI;
 		echo '";';
-		echo $sCrLf;
-		echo 'xajax.config.responseType = "';
-		echo $this->sResponseType;
-		echo '";';
-		
-		if (false === (null === $this->nResponseQueueSize))
-		{
+
+
+		if (false === (null === $this->nResponseQueueSize)) {
 			echo $sCrLf;
 			echo 'xajax.config.responseQueueSize = ';
 			echo $this->nResponseQueueSize;
 			echo ';';
 		}
-		
-		if (true === $this->bDebug)
-		{
-			if (false === (null === $this->sDebugOutputID))
-			{
+
+		if (true === $this->bDebug) {
+			if (false === (null === $this->sDebugOutputID)) {
 				echo $sCrLf;
 				echo 'xajax.debug = {};';
 				echo $sCrLf;
@@ -238,7 +226,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 				echo '";';
 			}
 		}
-		
+
 		echo $sCrLf;
 		echo '/* ]]> */';
 		echo $sCrLf;
@@ -268,7 +256,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 		$this->printJavascriptInclude();
 		return ob_get_clean();
 	}
-	
+
 	/*
 		Function: printJavascriptInclude
 		
@@ -281,22 +269,22 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 
 		if (0 == count($aJsFiles)) {
 			$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_core.js'), 'xajax');
-			
+
 			if (true === $this->bDebug)
 				$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_debug.js'), 'xajax.debug');
-			
+
 			if (true === $this->bVerboseDebug)
 				$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_verbose.js'), 'xajax.debug.verbose');
-			
+
 			if (null !== $this->sLanguage)
 				$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_lang_' . $this->sLanguage . '.js'), 'xajax');
 		}
-		
-		if ($sJsURI != '' && substr($sJsURI, -1) != '/') 
+
+		if ($sJsURI != '' && substr($sJsURI, -1) != '/')
 			$sJsURI .= '/';
-			
+
 		$sCrLf = "\n";
-		
+
 		foreach ($aJsFiles as $aJsFile) {
 			echo '<';
 			echo 'script type="text/javascript" src="';
@@ -308,7 +296,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 			echo '/script>';
 			echo $sCrLf;
 		}
-			
+
 		if (0 < $this->nScriptLoadTimeout) {
 			foreach ($aJsFiles as $aJsFile) {
 				echo '<';
@@ -354,7 +342,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 			}
 		}
 	}
-	
+
 	/*
 		Function: _getScriptFilename
 		
@@ -370,7 +358,7 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 	private function _getScriptFilename($sFilename)
 	{
 		if ($this->bUseUncompressedScripts) {
-			return str_replace('.js', '_uncompressed.js', $sFilename);  
+			return str_replace('.js', '_uncompressed.js', $sFilename);
 		}
 		return $sFilename;
 	}
