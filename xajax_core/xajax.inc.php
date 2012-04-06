@@ -161,9 +161,19 @@ final class xajax
 		String: sessionKey
 
 		The session key to use for response challenges.
+		Defaults to 'xajax_challenge'
+	*/
+	private $sSessionKey = 'xajax_challenge';
 
-	 */
-	private $sessionKey = 'xajax_challenge';
+
+	/*
+		String: $sChallengeAlgo
+
+		The algorithm to use for response challenges.
+		Defaults to 'md5'
+	*/
+
+	private $sChallengeAlgo = 'md5';
 
 	/*
 		Constructor: xajax
@@ -408,7 +418,11 @@ final class xajax
 			$this->sLogFile = $mValue;
 		} else if ('sessionKey' == $sName)
 		{
-			$this->sessionKey = $mValue;
+			$this->sSessionKey = $mValue;
+		} elseif ('challengeAlgo' == $sName && in_array($mValue, hash_algos()) )
+		{
+			$this->sChallengeAlgo = $mValue;
+
 		}
 
 
@@ -492,8 +506,8 @@ final class xajax
 	{
 		$challenges = array();
 
-		if (isset($_SESSION[$this->sessionKey]))
-			$challenges = $_SESSION[$this->sessionKey];
+		if (isset($_SESSION[$this->sSessionKey]))
+			$challenges = $_SESSION[$this->sSessionKey];
 
 		return $challenges;
 	}
@@ -503,20 +517,15 @@ final class xajax
 		if (count($challenges) > 10)
 			array_shift($challenges);
 
-		$_SESSION[$this->sessionKey] = $challenges;
+		$_SESSION[$this->sSessionKey] = $challenges;
 	}
 
-	private function makeChallenge($algo, $value)
+	private function makeChallenge( $value)
 	{
-		// TODO: Move to configuration option
-		if (null === $algo)
-			$algo = 'md5';
-
-		// TODO: Move to configuration option
 		if (null === $value)
 			$value = rand(100000, 999999);
 
-		return hash($algo, $value);
+		return hash($this->sChallengeAlgo, $value);
 	}
 
 	/*
@@ -528,12 +537,11 @@ final class xajax
 
 		NOTE:  Sessions must be enabled to use this feature.
 	*/
-	public function challenge($algo = null, $value = null)
+	public function challenge($value = null)
 	{
 		if (false === $this->verifySession())
 			return false;
 
-		// TODO: Move to configuration option
 
 		$challenges = $this->loadChallenges();
 
@@ -547,7 +555,7 @@ final class xajax
 			}
 		}
 
-		$challenge = $this->makeChallenge($algo, $value);
+		$challenge = $this->makeChallenge( $value);
 
 		$challenges[] = $challenge;
 
