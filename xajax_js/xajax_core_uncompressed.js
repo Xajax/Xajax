@@ -1295,30 +1295,38 @@ xajax.responseProcessor = {};
 xajax.tools.json = {}
 
 xajax.tools.json.processFragment = function(nodes, seq, oRet, oRequest) {
-	var xx = xajax;
-	var xt = xx.tools;
-	for (nodeName in nodes) {
-		if ('xjxobj' == nodeName) {
-			for (a in nodes[nodeName]) 
-			{
-				
-				var obj = nodes[nodeName][a];
-				obj.fullName = '*unknown*';
-				obj.sequence = seq;
-				obj.request = oRequest;
-				obj.context = oRequest.context;
-				xt.queue.push(xx.response, obj);
-				++seq;
-	
-			}
-		} else if ('xjxrv' == nodeName) {
-			oRet = nodes[nodeName];
-		} else if ('debugmsg' == nodeName) {
-			 txt = nodes[nodeName];
-		} else 
-			throw { code: 10004, data: obj.fullName}
-	}
-	return oRet;
+    var xx = xajax;
+    var xt = xx.tools;
+    for (nodeName in nodes) {
+        if ('xjxobj' == nodeName) {
+            for (a in nodes[nodeName])
+            {
+            
+             /*
+             prevents from using not numbered indexes of 'xjxobj'
+             nodes[nodeName][a]= "0" is an valid xajax response stack item
+             nodes[nodeName][a]= "pop" is an method from somewhere but not from xjxobj
+             */
+             if( parseInt(a) !=a)  continue;
+            
+             var obj = nodes[nodeName][a];
+   
+             obj.fullName = '*unknown*';
+             obj.sequence = seq;
+             obj.request = oRequest;
+             obj.context = oRequest.context;
+             xt.queue.push(xx.response, obj);
+             ++seq;
+   
+            }
+        } else if ('xjxrv' == nodeName) {
+            oRet = nodes[nodeName];
+        } else if ('debugmsg' == nodeName) {
+             txt = nodes[nodeName];
+        } else
+            throw { code: 10004, data: obj.fullName}
+    }
+    return oRet;
 }
 
 xajax.responseProcessor.json = function (oRequest) {
