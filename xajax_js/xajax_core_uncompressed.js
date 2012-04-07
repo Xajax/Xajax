@@ -1305,20 +1305,18 @@ xajax.tools.json.processFragment = function(nodes, seq, oRet, oRequest) {
              /*
              prevents from using not numbered indexes of 'xjxobj'
              nodes[nodeName][a]= "0" is an valid xajax response stack item
-             nodes[nodeName][a]= "pop" is an method from somewhere
-             
-             alternate you can change from continue to an break command;
+             nodes[nodeName][a]= "pop" is an method from somewhere but not from xjxobj
              */
              if( parseInt(a) !=a)  continue;
             
-                var obj = nodes[nodeName][a];
+             var obj = nodes[nodeName][a];
    
-                obj.fullName = '*unknown*';
-                obj.sequence = seq;
-                obj.request = oRequest;
-                obj.context = oRequest.context;
-                xt.queue.push(xx.response, obj);
-                ++seq;
+             obj.fullName = '*unknown*';
+             obj.sequence = seq;
+             obj.request = oRequest;
+             obj.context = oRequest.context;
+             xt.queue.push(xx.response, obj);
+             ++seq;
    
             }
         } else if ('xjxrv' == nodeName) {
