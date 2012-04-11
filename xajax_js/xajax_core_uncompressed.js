@@ -2602,15 +2602,15 @@ xajax.events = {}
 	true - The operation completed successfully.
 */
 xajax.events.setEvent = function(command) {
-	command.fullName = 'addEvent';
+	command.fullName = 'setEvent';
 	var element = command.id;
 	var sEvent = command.prop;
 	var code = command.data;
-	if ('string' == typeof element)
-		element = xajax.$(element);
+    //force to get the element 
+	element = xajax.$(element);
 	sEvent = xajax.tools.addOnPrefix(sEvent);
 	code = xajax.tools.doubleQuotes(code);
-	eval('element.' + sEvent + ' = function() { ' + code + '; }');
+	eval('element.' + sEvent + ' = function(e) { ' + code + '; }');
 	return true;
 }
 
