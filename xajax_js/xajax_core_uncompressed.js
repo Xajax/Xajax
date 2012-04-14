@@ -334,7 +334,10 @@ xajax.tools = {}
 xajax.tools.$ = function(sId) {
 	if (!sId)
 		return null;
-	
+    //sId not an string so return it maybe its an object.
+	if(typeof sId != 'string')
+        return sId;
+
 	var oDoc = xajax.config.baseDocument;
 
 	var obj = oDoc.getElementById(sId);
