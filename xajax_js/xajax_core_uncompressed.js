@@ -388,11 +388,12 @@ xajax.tools.in_array = function(array, valueToCheck) {
 	
 	haystack - The source string to be scanned.
 	
-	Returns:
+	Returns:  false on error
 	
 	string - A new string with the modifications applied.
 */
 xajax.tools.doubleQuotes = function(haystack) {
+    if(typeof haystack == 'undefined') return false;
 	return haystack.replace(new RegExp("'", 'g'), '"');
 }
 
