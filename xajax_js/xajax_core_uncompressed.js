@@ -219,7 +219,7 @@ xajax.config.setDefault('responseQueueSize', 1000);
 xajax.config.status = {
 	/*
 		Function: update
-		
+
 		Constructs and returns a set of event handlers that will be
 		called by the xajax framework to set the status bar messages.
 	*/
@@ -241,7 +241,7 @@ xajax.config.status = {
 	},
 	/*
 		Function: dontUpdate
-		
+
 		Constructs and returns a set of event handlers that will be
 		called by the xajax framework where status bar updates
 		would normally occur.
@@ -267,9 +267,9 @@ xajax.config.status = {
 xajax.config.cursor = {
 	/*
 		Function: update
-		
+
 		Constructs and returns a set of event handlers that will be
-		called by the xajax framework to effect the status of the 
+		called by the xajax framework to effect the status of the
 		cursor during requests.
 	*/
 	update: function() {
@@ -285,7 +285,7 @@ xajax.config.cursor = {
 	},
 	/*
 		Function: dontUpdate
-		
+
 		Constructs and returns a set of event handlers that will
 		be called by the xajax framework where cursor status changes
 		would typically be made during the handling of requests.
@@ -334,13 +334,16 @@ xajax.tools = {}
 xajax.tools.$ = function(sId) {
 	if (!sId)
 		return null;
-	
-	var oDoc = xajax.config.baseDocument;
+
+	if(typeof sId != 'string')
+       return sId;   //sId not an string so return it maybe its an object.
+
+    var oDoc = xajax.config.baseDocument;
 
 	var obj = oDoc.getElementById(sId);
 	if (obj)
 		return obj;
-		
+
 	if (oDoc.all)
 		return oDoc.all[sId];
 
@@ -393,6 +396,7 @@ xajax.tools.in_array = function(array, valueToCheck) {
 	string - A new string with the modifications applied.
 */
 xajax.tools.doubleQuotes = function(haystack) {
+    if(typeof haystack=='undefined')return false;
 	return haystack.replace(new RegExp("'", 'g'), '"');
 }
 
@@ -601,7 +605,7 @@ xajax.tools._enforceDataType = function(value) {
 xajax.tools._nodeToObject = function(node) {
 	if (null == node)
 		return '';
-		
+
 	if ('undefined' != typeof node.nodeName) {
 		if ('#cdata-section' == node.nodeName || '#text' == node.nodeName) {
 			var data = '';
@@ -635,7 +639,7 @@ xajax.tools._nodeToObject = function(node) {
 			return data;
 		}
 	}
-	
+
 	throw { code: 10001, data: node.nodeName };
 }
 
@@ -681,7 +685,7 @@ xajax.tools.getRequestObject = function() {
 			throw { code: 10002 };
 		}
 	}
-	
+
 	// this would seem to cause an infinite loop, however, the function should
 	// be reassigned by now and therefore, it will not loop.
 	return xajax.tools.getRequestObject();
@@ -708,7 +712,7 @@ xajax.tools.getBrowserHTML = function(sValue) {
 	var oDoc = xajax.config.baseDocument;
 	if (!oDoc.body)
 		return '';
-		
+
 	var elWorkspace = xajax.$('xajax_temp_workspace');
 	if (!elWorkspace)
 	{
@@ -720,8 +724,8 @@ xajax.tools.getBrowserHTML = function(sValue) {
 	}
 	elWorkspace.innerHTML = sValue;
 	var browserHTML = elWorkspace.innerHTML;
-	elWorkspace.innerHTML = '';	
-	
+	elWorkspace.innerHTML = '';
+
 	return browserHTML;
 }
 
@@ -748,10 +752,11 @@ xajax.tools.getBrowserHTML = function(sValue) {
 	false - The specified value is the same as the current value.
 */
 xajax.tools.willChange = function(element, attribute, newData) {
-	if ('string' == typeof element)
-		element = xajax.$(element);
+
+	// getting the element as NodeObject ()
+	element = xajax.$(element);
 	if (element) {
-		var oldData;		
+		var oldData;
 		eval('oldData=element.'+attribute);
 		return (newData != oldData);
 	}
@@ -779,16 +784,16 @@ xajax.tools.getFormValues = function(parent) {
 	var submitDisabledElements = false;
 	if (arguments.length > 1 && arguments[1] == true)
 		submitDisabledElements = true;
-	
+
 	var prefix = '';
 	if(arguments.length > 2)
 		prefix = arguments[2];
-	
+
 	if ('string' == typeof parent)
 		parent = xajax.$(parent);
-	
+
 	var aFormValues = {};
-	
+
 //		JW: Removing these tests so that form values can be retrieved from a specified
 //		container element like a DIV, regardless of whether they exist in a form or not.
 //
@@ -797,7 +802,7 @@ xajax.tools.getFormValues = function(parent) {
 	if (parent)
 		if (parent.childNodes)
 			xajax.tools._getFormValues(aFormValues, parent.childNodes, submitDisabledElements, prefix);
-	
+
 	return aFormValues;
 }
 
@@ -830,17 +835,17 @@ xajax.tools._getFormValue = function(aFormValues, child, submitDisabledElements,
 {
 	if (!child.name)
 		return;
-		
+
 	if ('PARAM' == child.tagName) return;
-		
+
 	if (child.disabled)
 		if (true == child.disabled)
 			if (false == submitDisabledElements)
 				return;
-				
+
 	if (prefix != child.name.substring(0, prefix.length))
 		return;
-		
+
 	if (child.type)
 		if (child.type == 'radio' || child.type == 'checkbox')
 			if (false == child.checked)
@@ -871,10 +876,10 @@ xajax.tools._getFormValue = function(aFormValues, child, submitDisabledElements,
 		var p = aFormValues; // pointer reset
 		while (a.length != 0) {
 			var sa = a.substr(0, a.indexOf(']')+1);
-			
+
 			var lk = k; //save last key
 			var lp = p; //save last pointer
-			
+
 			a = a.substr(a.indexOf(']')+1);
 			p = p[k];
 			k = sa.substr(1, sa.length-2);
@@ -887,7 +892,7 @@ xajax.tools._getFormValue = function(aFormValues, child, submitDisabledElements,
 				}
 			}
 			if (typeof p[k] == 'undefined')
-				p[k] = []; 
+				p[k] = [];
 		}
 		p[k] = values;
 	} else {
@@ -913,7 +918,7 @@ xajax.tools.stripOnPrefix = function(sEventName) {
 	sEventName = sEventName.toLowerCase();
 	if (0 == sEventName.indexOf('on'))
 		sEventName = sEventName.replace(/on/,'');
-	
+
 	return sEventName;
 }
 
@@ -935,7 +940,7 @@ xajax.tools.addOnPrefix = function(sEventName) {
 	sEventName = sEventName.toLowerCase();
 	if (0 != sEventName.indexOf('on'))
 		sEventName = 'on' + sEventName;
-	
+
 	return sEventName;
 }
 
@@ -1009,7 +1014,7 @@ xajax.tools.xml.parseChildren = function(child, obj) {
 	} else if ('undefined' != typeof child.data) {
 		obj.data = child.data;
 	}
-	
+
 	obj.data = xajax.tools._enforceDataType(obj.data);
 }
 
@@ -1034,18 +1039,18 @@ xajax.tools.xml.processFragment = function(xmlNode, seq, oRet, oRequest) {
 			obj.sequence = seq;
 			obj.request = oRequest;
 			obj.context = oRequest.context;
-			
+
 			xt.xml.parseAttributes(xmlNode, obj);
 			xt.xml.parseChildren(xmlNode, obj);
-			
+
 			xt.queue.push(xx.response, obj);
 		} else if ('xjxrv' == xmlNode.nodeName) {
 			oRet = xt._nodeToObject(xmlNode.firstChild);
 		} else if ('debugmsg' == xmlNode.nodeName) {
 			// txt = xt._nodeToObject(xmlNode.firstChild);
-		} else 
+		} else
 			throw { code: 10004, data: xmlNode.nodeName }
-			
+
 		++seq;
 		xmlNode = xmlNode.nextSibling;
 	}
@@ -1190,12 +1195,12 @@ xajax.tools.queue.process = function(theQ) {
 	var obj = xajax.tools.queue.pop(theQ);
 	while (null != obj) {
 		try {
-			if (false == xajax.executeCommand(obj)) 
+			if (false == xajax.executeCommand(obj))
 				return false;
 		} catch (e) {
 		}
 		delete obj;
-		
+
 		obj = xajax.tools.queue.pop(theQ);
 	}
 	return true;
@@ -1219,7 +1224,7 @@ xajax.tools.queue.push = function(theQ, obj) {
 	var next = theQ.end + 1;
 	if (next > theQ.size)
 		next = 0;
-	if (next != theQ.start) {				
+	if (next != theQ.start) {
 		theQ.commands[theQ.end] = obj;
 		theQ.end = next;
 	} else
@@ -1295,42 +1300,50 @@ xajax.responseProcessor = {};
 xajax.tools.json = {}
 
 xajax.tools.json.processFragment = function(nodes, seq, oRet, oRequest) {
-	var xx = xajax;
-	var xt = xx.tools;
-	for (nodeName in nodes) {
-		if ('xjxobj' == nodeName) {
-			for (a in nodes[nodeName]) 
-			{
-				
-				var obj = nodes[nodeName][a];
-				obj.fullName = '*unknown*';
-				obj.sequence = seq;
-				obj.request = oRequest;
-				obj.context = oRequest.context;
-				xt.queue.push(xx.response, obj);
-				++seq;
-	
-			}
-		} else if ('xjxrv' == nodeName) {
-			oRet = nodes[nodeName];
-		} else if ('debugmsg' == nodeName) {
-			 txt = nodes[nodeName];
-		} else 
-			throw { code: 10004, data: obj.fullName}
-	}
-	return oRet;
+    var xx = xajax;
+    var xt = xx.tools;
+    for (nodeName in nodes) {
+        if ('xjxobj' == nodeName) {
+            for (a in nodes[nodeName])
+            {
+
+             /*
+             prevents from using not numbered indexes of 'xjxobj'
+             nodes[nodeName][a]= "0" is an valid xajax response stack item
+             nodes[nodeName][a]= "pop" is an method from somewhere but not from xjxobj
+             */
+             if( parseInt(a) !=a)  continue;
+
+             var obj = nodes[nodeName][a];
+
+             obj.fullName = '*unknown*';
+             obj.sequence = seq;
+             obj.request = oRequest;
+             obj.context = oRequest.context;
+             xt.queue.push(xx.response, obj);
+             ++seq;
+
+            }
+        } else if ('xjxrv' == nodeName) {
+            oRet = nodes[nodeName];
+        } else if ('debugmsg' == nodeName) {
+             txt = nodes[nodeName];
+        } else
+            throw { code: 10004, data: obj.fullName}
+    }
+    return oRet;
 }
 
 xajax.responseProcessor.json = function (oRequest) {
-	
+
 	var xx = xajax;
 	var xt = xx.tools;
 	var xcb = xx.callback;
 	var gcb = xcb.global;
 	var lcb = oRequest.callback;
-	
+
 	var oRet = oRequest.returnValue;
-	
+
 	if (xt.in_array(xx.responseSuccessCodes, oRequest.request.status)) {
 		xcb.execute([gcb, lcb], 'onSuccess', oRequest);
 		var seq = 0;
@@ -1345,7 +1358,7 @@ xajax.responseProcessor.json = function (oRequest) {
 				oRet = xt.json.processFragment(responseJSON, seq, oRet, oRequest);
 			} else {
 			}
-		} 
+		}
 		var obj = {};
 		obj.fullName = 'Response Complete';
 		obj.sequence = seq;
@@ -1353,7 +1366,7 @@ xajax.responseProcessor.json = function (oRequest) {
 		obj.context = oRequest.context;
 		obj.cmd = 'rcmplt';
 		xt.queue.push(xx.response, obj);
-		
+
 		// do not re-start the queue if a timeout is set
 		if (null == xx.response.timeout)
 			xt.queue.process(xx.response);
@@ -1365,10 +1378,10 @@ xajax.responseProcessor.json = function (oRequest) {
 		xcb.execute([gcb, lcb], 'onFailure', oRequest);
 		xx.completeResponse(oRequest);
 	}
-	
+
 	return oRet;
 
-	
+
 }
 
 /*
@@ -1388,9 +1401,9 @@ xajax.responseProcessor.xml = function(oRequest) {
 	var xcb = xx.callback;
 	var gcb = xcb.global;
 	var lcb = oRequest.callback;
-	
+
 	var oRet = oRequest.returnValue;
-	
+
 	if (xt.in_array(xx.responseSuccessCodes, oRequest.request.status)) {
 		xcb.execute([gcb, lcb], 'onSuccess', oRequest);
 		var seq = 0;
@@ -1398,11 +1411,11 @@ xajax.responseProcessor.xml = function(oRequest) {
 			var responseXML = oRequest.request.responseXML;
 			if (responseXML.documentElement) {
 				oRequest.status.onProcessing();
-				
+
 				var child = responseXML.documentElement.firstChild;
 				oRet = xt.xml.processFragment(child, seq, oRet, oRequest);
 			}
-		} 
+		}
 		var obj = {};
 		obj.fullName = 'Response Complete';
 		obj.sequence = seq;
@@ -1410,7 +1423,7 @@ xajax.responseProcessor.xml = function(oRequest) {
 		obj.context = oRequest.context;
 		obj.cmd = 'rcmplt';
 		xt.queue.push(xx.response, obj);
-		
+
 		// do not re-start the queue if a timeout is set
 		if (null == xx.response.timeout)
 			xt.queue.process(xx.response);
@@ -1422,7 +1435,7 @@ xajax.responseProcessor.xml = function(oRequest) {
 		xcb.execute([gcb, lcb], 'onFailure', oRequest);
 		xx.completeResponse(oRequest);
 	}
-	
+
 	return oRet;
 }
 
@@ -1695,9 +1708,9 @@ xajax.js.waitFor = function(args) {
 */
 xajax.js.call = function(args) {
 	args.fullName = 'call js function';
-	
+
 	var parameters = args.data;
-	
+
 	var scr = new Array();
 	scr.push(args.func);
 	scr.push('(');
@@ -1830,11 +1843,11 @@ xajax.js.makeWrapper = function(origFun, args, codeBlocks, returnVariable, conte
 	var originalCall = 	'origFun(';
 	originalCall += args;
 	originalCall += '); ';
-	
+
 	var code = 'wrapper = function(';
 	code += args;
 	code += ') { ';
-	
+
 	if (0 < returnVariable.length) {
 		code += ' var ';
 		code += returnVariable;
@@ -1853,7 +1866,7 @@ xajax.js.makeWrapper = function(origFun, args, codeBlocks, returnVariable, conte
 		code += ';';
 	}
 	code += ' } ';
-	
+
 	var wrapper = null;
 	context.xajaxDelegateCall = function() {
 		eval(code);
@@ -1883,9 +1896,10 @@ xajax.dom = {}
 	true - The operation completed successfully.
 */
 xajax.dom.assign = function(element, property, data) {
-	if ('string' == typeof element)
-		element = xajax.$(element);
-	
+
+    // getting the element as NodeObject ()
+	element = xajax.$(element);
+
 	switch (property) {
 	case 'innerHTML':
 			element.innerHTML = data;
@@ -1922,9 +1936,10 @@ xajax.dom.assign = function(element, property, data) {
 	true - The operation completed successfully.
 */
 xajax.dom.append = function(element, property, data) {
-	if ('string' == typeof element)
-		element = xajax.$(element);
-	
+
+	// getting the element as NodeObject ()
+	element = xajax.$(element);
+
 	eval('element.' + property + ' += data;');
 	return true;
 }
@@ -1945,9 +1960,10 @@ xajax.dom.append = function(element, property, data) {
 	true - The operation completed successfully.
 */
 xajax.dom.prepend = function(element, property, data) {
-	if ('string' == typeof element)
-		element = xajax.$(element);
-	
+
+    // getting the element as NodeObject ()
+	element = xajax.$(element);
+
 	eval('element.' + property + ' = data + element.' + property);
 	return true;
 }
@@ -1971,21 +1987,21 @@ xajax.dom.prepend = function(element, property, data) {
 xajax.dom.replace = function(element, sAttribute, aData) {
 	var sSearch = aData['s'];
 	var sReplace = aData['r'];
-	
+
 	if (sAttribute == 'innerHTML')
 		sSearch = xajax.tools.getBrowserHTML(sSearch);
-	
-	if ('string' == typeof element)
-		element = xajax.$(element);
-	
+
+	// getting the element as NodeObject ()
+	element = xajax.$(element);
+
 	eval('var txt = element.' + sAttribute);
-	
+
 	var bFunction = false;
 	if ('function' == typeof txt) {
         txt = txt.join('');
         bFunction = true;
     }
-	
+
 	var start = txt.indexOf(sSearch);
 	if (start > -1) {
 		var newTxt = [];
@@ -1998,7 +2014,7 @@ xajax.dom.replace = function(element, sAttribute, aData) {
 		}
 		newTxt.push(txt);
 		newTxt = newTxt.join('');
-		
+
 		if (bFunction) {
 			eval('element.' + sAttribute + '=newTxt;');
 		} else if (xajax.tools.willChange(element, sAttribute, newTxt)) {
@@ -2023,9 +2039,10 @@ xajax.dom.replace = function(element, sAttribute, aData) {
 	true - The operation completed successfully.
 */
 xajax.dom.remove = function(element) {
-	if ('string' == typeof element)
-		element = xajax.$(element);
-	
+
+	// getting the element as NodeObject ()
+	element = xajax.$(element);
+
 	if (element && element.parentNode && element.parentNode.removeChild)
 		element.parentNode.removeChild(element);
 
@@ -2334,13 +2351,13 @@ xajax.css.add = function(fileName, media) {
 	var oHeads = oDoc.getElementsByTagName('head');
 	var oHead = oHeads[0];
 	var oLinks = oHead.getElementsByTagName('link');
-	
+
 	var found = false;
 	var iLen = oLinks.length;
 	for (var i = 0; i < iLen && false == found; ++i)
 		if (0 <= oLinks[i].href.indexOf(fileName) && oLinks[i].media == media)
 			found = true;
-	
+
 	if (false == found) {
 		var oCSS = oDoc.createElement('link');
 		oCSS.rel = 'stylesheet';
@@ -2349,7 +2366,7 @@ xajax.css.add = function(fileName, media) {
 		oCSS.media = media;
 		oHead.appendChild(oCSS);
 	}
-	
+
 	return true;
 }
 
@@ -2372,13 +2389,13 @@ xajax.css.remove = function(fileName, media) {
 	var oHeads = oDoc.getElementsByTagName('head');
 	var oHead = oHeads[0];
 	var oLinks = oHead.getElementsByTagName('link');
-	
+
 	var i = 0;
 	while (i < oLinks.length)
 		if (0 <= oLinks[i].href.indexOf(fileName) && oLinks[i].media == media)
 			oHead.removeChild(oLinks[i]);
 		else ++i;
-	
+
 	return true;
 }
 
@@ -2418,13 +2435,13 @@ xajax.css.waitForCSS = function(args) {
 			}
 		}
 	}
-	
+
 	var ssLoaded = true;
 	var iLen = ssEnabled.length;
 	for (var i = 0; i < iLen; ++i)
 		if (0 == ssEnabled[i])
 			ssLoaded = false;
-	
+
 	if (false == ssLoaded) {
 		// inject a delay in the queue processing
 		// handle retry counter
@@ -2598,8 +2615,8 @@ xajax.events.setEvent = function(command) {
 	var element = command.id;
 	var sEvent = command.prop;
 	var code = command.data;
-	if ('string' == typeof element)
-		element = xajax.$(element);
+    // getting the element as NodeObject ()
+	element = xajax.$(element);
 	sEvent = xajax.tools.addOnPrefix(sEvent);
 	code = xajax.tools.doubleQuotes(code);
 	eval('element.' + sEvent + ' = function() { ' + code + '; }');
@@ -2629,8 +2646,8 @@ xajax.events.addHandler = function(element, sEvent, fun) {
 			var element = command.id;
 			var sEvent = command.prop;
 			var fun = command.data;
-			if ('string' == typeof element)
-				element = xajax.$(element);
+			// getting the element as NodeObject ()
+	        element = xajax.$(element);
 			sEvent = xajax.tools.stripOnPrefix(sEvent);
 			eval('element.addEventListener("' + sEvent + '", ' + fun + ', false);');
 			return true;
@@ -2641,8 +2658,8 @@ xajax.events.addHandler = function(element, sEvent, fun) {
 			var element = command.id;
 			var sEvent = command.prop;
 			var fun = command.data;
-			if ('string' == typeof element)
-				element = xajax.$(element);
+			// getting the element as NodeObject ()
+	        element = xajax.$(element);
 			sEvent = xajax.tools.addOnPrefix(sEvent);
 			eval('element.attachEvent("' + sEvent + '", ' + fun + ', false);');
 			return true;
@@ -2675,8 +2692,8 @@ xajax.events.removeHandler = function(element, sEvent, fun) {
 			var element = command.id;
 			var sEvent = command.prop;
 			var fun = command.data;
-			if ('string' == typeof element)
-				element = xajax.$(element);
+		    // getting the element as NodeObject ()
+	        element = xajax.$(element);
 			sEvent = xajax.tools.stripOnPrefix(sEvent);
 			eval('element.removeEventListener("' + sEvent + '", ' + fun + ', false);');
 			return true;
@@ -2687,8 +2704,8 @@ xajax.events.removeHandler = function(element, sEvent, fun) {
 			var element = command.id;
 			var sEvent = command.prop;
 			var fun = command.data;
-			if ('string' == typeof element)
-				element = xajax.$(element);
+	        // getting the element as NodeObject ()
+	        element = xajax.$(element);
 			sEvent = xajax.tools.addOnPrefix(sEvent);
 			eval('element.detachEvent("' + sEvent + '", ' + fun + ', false);');
 			return true;
@@ -2716,18 +2733,18 @@ xajax.callback.create = function() {
 	var xx = xajax;
 	var xc = xx.config;
 	var xcb = xx.callback;
-	
+
 	var oCB = {}
 	oCB.timers = {};
-	
+
 	oCB.timers.onResponseDelay = xcb.setupTimer(
-		(arguments.length > 0) 
-			? arguments[0] 
+		(arguments.length > 0)
+			? arguments[0]
 			: xc.defaultResponseDelayTime);
-	
+
 	oCB.timers.onExpiration = xcb.setupTimer(
-		(arguments.length > 1) 
-			? arguments[1] 
+		(arguments.length > 1)
+			? arguments[1]
 			: xc.defaultExpirationTime);
 
 	oCB.onRequest = null;
@@ -2738,7 +2755,7 @@ xajax.callback.create = function() {
 	oCB.onRedirect = null;
 	oCB.onSuccess = null;
 	oCB.onComplete = null;
-	
+
 	return oCB;
 }
 
@@ -2803,7 +2820,7 @@ xajax.callback.execute = function(oCallback, sFunction, args) {
 		var func = oCallback[sFunction];
 		if ('function' == typeof func) {
 			if ('undefined' != typeof oCallback.timers[sFunction]) {
-				oCallback.timers[sFunction].timer = setTimeout(function() { 
+				oCallback.timers[sFunction].timer = setTimeout(function() {
 					func(args);
 				}, oCallback.timers[sFunction].delay);
 			}
@@ -3130,7 +3147,7 @@ xajax.command.handler.register('dbg', function(args) {
 xajax.initializeRequest = function(oRequest) {
 	var xx = xajax;
 	var xc = xx.config;
-	
+
 	oRequest.append = function(opt, def) {
 		if ('undefined' != typeof this[opt]) {
 			for (var itmName in def)
@@ -3138,7 +3155,7 @@ xajax.initializeRequest = function(oRequest) {
 					this[opt][itmName] = def[itmName];
 		} else this[opt] = def;
 	}
-	
+
 	oRequest.append('commonHeaders', xc.commonHeaders);
 	oRequest.append('postHeaders', xc.postHeaders);
 	oRequest.append('getHeaders', xc.getHeaders);
@@ -3147,7 +3164,7 @@ xajax.initializeRequest = function(oRequest) {
 		if ('undefined' == typeof this[option])
 			this[option] = defaultValue;
 	}
-	
+
 	oRequest.set('statusMessages', xc.statusMessages);
 	oRequest.set('waitCursor', xc.waitCursor);
 	oRequest.set('mode', xc.defaultMode);
@@ -3160,11 +3177,11 @@ xajax.initializeRequest = function(oRequest) {
 	oRequest.set('maxObjectDepth', xc.maxObjectDepth);
 	oRequest.set('maxObjectSize', xc.maxObjectSize);
 	oRequest.set('context', window);
-	
+
 	var xcb = xx.callback;
 	var gcb = xcb.global;
 	var lcb = xcb.create();
-	
+
 	lcb.take = function(frm, opt) {
 		if ('undefined' != typeof frm[opt]) {
 			lcb[opt] = frm[opt];
@@ -3172,7 +3189,7 @@ xajax.initializeRequest = function(oRequest) {
 		}
 		delete frm[opt];
 	}
-	
+
 	lcb.take(oRequest, 'onRequest');
 	lcb.take(oRequest, 'onResponseDelay');
 	lcb.take(oRequest, 'onExpiration');
@@ -3181,31 +3198,31 @@ xajax.initializeRequest = function(oRequest) {
 	lcb.take(oRequest, 'onRedirect');
 	lcb.take(oRequest, 'onSuccess');
 	lcb.take(oRequest, 'onComplete');
-	
+
 	if ('undefined' != typeof oRequest.callback) {
 		if (lcb.hasEvents)
 			oRequest.callback = [oRequest.callback, lcb];
 	} else
 		oRequest.callback = lcb;
-	
-	oRequest.status = (oRequest.statusMessages) 
-		? xc.status.update() 
+
+	oRequest.status = (oRequest.statusMessages)
+		? xc.status.update()
 		: xc.status.dontUpdate();
-	
-	oRequest.cursor = (oRequest.waitCursor) 
-		? xc.cursor.update() 
+
+	oRequest.cursor = (oRequest.waitCursor)
+		? xc.cursor.update()
 		: xc.cursor.dontUpdate();
-	
+
 	oRequest.method = oRequest.method.toUpperCase();
 	if ('GET' != oRequest.method)
 		oRequest.method = 'POST';	// W3C: Method is case sensitive
-	
+
 	oRequest.requestRetry = oRequest.retry;
-	
+
 	oRequest.append('postHeaders', {
 		'content-type': oRequest.contentType
 		});
-		
+
 	delete oRequest['append'];
 	delete oRequest['set'];
 	delete oRequest['take'];
@@ -3232,9 +3249,9 @@ xajax.initializeRequest = function(oRequest) {
 xajax.processParameters = function(oRequest) {
 	var xx = xajax;
 	var xt = xx.tools;
-	
+
 	var rd = [];
-	
+
 	var separator = '';
 	for (var sCommand in oRequest.functionName) {
 		if ('constructor' != sCommand) {
@@ -3293,15 +3310,15 @@ xajax.processParameters = function(oRequest) {
 			}
 		}
 	}
-	
+
 	oRequest.requestURI = oRequest.URI;
-	
+
 	if ('GET' == oRequest.method) {
 		oRequest.requestURI += oRequest.requestURI.indexOf('?')== -1 ? '?' : '&';
 		oRequest.requestURI += rd.join('');
 		rd = [];
 	}
-	
+
 	oRequest.requestData = rd.join('');
 }
 
@@ -3324,9 +3341,9 @@ xajax.processParameters = function(oRequest) {
 xajax.prepareRequest = function(oRequest) {
 	var xx = xajax;
 	var xt = xx.tools;
-	
+
 	oRequest.request = xt.getRequestObject();
-	
+
 	oRequest.setRequestHeaders = function(headers) {
 	 	if ('object' == typeof headers) {
 			for (var optionName in headers)
@@ -3344,7 +3361,7 @@ xajax.prepareRequest = function(oRequest) {
 	oRequest.setGetRequestHeaders = function() {
 		this.setRequestHeaders(this.getHeaders);
 	}
-	
+
 	if ('asynchronous' == oRequest.mode) {
 		// references inside this function should be expanded
 		// IOW, don't use shorthand references like xx for xajax
@@ -3361,25 +3378,25 @@ xajax.prepareRequest = function(oRequest) {
 			return xajax.responseReceived(oRequest);
 		}
 	}
-	
+
 	if ('undefined' != typeof oRequest.userName && 'undefined' != typeof oRequest.password) {
 		oRequest.open = function() {
 			this.request.open(
-				this.method, 
-				this.requestURI, 
-				'asynchronous' == this.mode, 
-				oRequest.userName, 
+				this.method,
+				this.requestURI,
+				'asynchronous' == this.mode,
+				oRequest.userName,
 				oRequest.password);
 		}
 	} else {
 		oRequest.open = function() {
 			this.request.open(
-				this.method, 
-				this.requestURI, 
+				this.method,
+				this.requestURI,
 				'asynchronous' == this.mode);
 		}
 	}
-	
+
 	if ('POST' == oRequest.method) {	// W3C: Method is case sensitive
 		oRequest.applyRequestHeaders = function() {
 			this.setCommonRequestHeaders();
@@ -3423,15 +3440,15 @@ xajax.request = function() {
 	var numArgs = arguments.length;
 	if (0 == numArgs)
 		return false;
-	
+
 	var oRequest = {}
 	if (1 < numArgs)
 		oRequest = arguments[1];
-	
+
 	oRequest.functionName = arguments[0];
-	
+
 	var xx = xajax;
-	
+
 	xx.initializeRequest(oRequest);
 	xx.processParameters(oRequest);
 	while (0 < oRequest.requestRetry) {
@@ -3465,23 +3482,23 @@ xajax.request = function() {
 */
 xajax.submitRequest = function(oRequest) {
 	oRequest.status.onRequest();
-	
+
 	var xcb = xajax.callback;
 	var gcb = xcb.global;
 	var lcb = oRequest.callback;
-	
+
 	xcb.execute([gcb, lcb], 'onResponseDelay', oRequest);
 	xcb.execute([gcb, lcb], 'onExpiration', oRequest);
 	xcb.execute([gcb, lcb], 'onRequest', oRequest);
-	
+
 	oRequest.open();
 	oRequest.applyRequestHeaders();
 
 	oRequest.cursor.onWaiting();
 	oRequest.status.onWaiting();
-	
+
 	xajax._internalSend(oRequest);
-	
+
 	// synchronous mode causes response to be processed immediately here
 	return oRequest.finishRequest();
 }
@@ -3535,10 +3552,10 @@ xajax.responseReceived = function(oRequest) {
 	// request is aborted
 	if (oRequest.aborted)
 		return;
-	
+
 	xcb.clearTimer([gcb, lcb], 'onExpiration');
 	xcb.clearTimer([gcb, lcb], 'onResponseDelay');
-	
+
 	xcb.execute([gcb, lcb], 'beforeResponseProcessing', oRequest);
 
 	var challenge = oRequest.request.getResponseHeader('challenge');
@@ -3547,14 +3564,14 @@ xajax.responseReceived = function(oRequest) {
 		xx.prepareRequest(oRequest);
 		return xx.submitRequest(oRequest);
 	}
-	
+
 	var fProc = xx.getResponseProcessor(oRequest);
 	if ('undefined' == typeof fProc) {
 		xcb.execute([gcb, lcb], 'onFailure', oRequest);
 		xx.completeResponse(oRequest);
 		return;
 	}
-	
+
 	return fProc(oRequest);
 }
 
@@ -3575,7 +3592,7 @@ xajax.responseReceived = function(oRequest) {
 */
 xajax.getResponseProcessor = function(oRequest) {
 	var fProc;
-	
+
 	if ('undefined' == typeof oRequest.responseProcessor) {
 		var cTyp = oRequest.request.getResponseHeader('content-type');
 		if (cTyp) {
@@ -3586,7 +3603,7 @@ xajax.getResponseProcessor = function(oRequest) {
 			}
 		}
 	} else fProc = oRequest.responseProcessor;
-	
+
 	return fProc;
 }
 
@@ -3690,7 +3707,6 @@ xajax.isLoaded = true;
 
 /*
 	Class: xjx
-	
 	Contains shortcut's to frequently used functions.
 */
 xjx = {}
