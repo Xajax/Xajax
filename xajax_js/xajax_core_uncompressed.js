@@ -334,7 +334,10 @@ xajax.tools = {}
 xajax.tools.$ = function(sId) {
 	if (!sId)
 		return null;
-	
+    //sId not an string so return it maybe its an object.
+	if(typeof sId != 'string')
+        return sId;
+
 	var oDoc = xajax.config.baseDocument;
 
 	var obj = oDoc.getElementById(sId);
@@ -388,11 +391,12 @@ xajax.tools.in_array = function(array, valueToCheck) {
 	
 	haystack - The source string to be scanned.
 	
-	Returns:
+	Returns:  false on error
 	
 	string - A new string with the modifications applied.
 */
 xajax.tools.doubleQuotes = function(haystack) {
+    if(typeof haystack == 'undefined') return false;
 	return haystack.replace(new RegExp("'", 'g'), '"');
 }
 
@@ -2614,15 +2618,15 @@ xajax.events = {}
 	true - The operation completed successfully.
 */
 xajax.events.setEvent = function(command) {
-	command.fullName = 'addEvent';
+	command.fullName = 'setEvent';
 	var element = command.id;
 	var sEvent = command.prop;
 	var code = command.data;
-	if ('string' == typeof element)
-		element = xajax.$(element);
+    //force to get the element 
+	element = xajax.$(element);
 	sEvent = xajax.tools.addOnPrefix(sEvent);
 	code = xajax.tools.doubleQuotes(code);
-	eval('element.' + sEvent + ' = function() { ' + code + '; }');
+	eval('element.' + sEvent + ' = function(e) { ' + code + '; }');
 	return true;
 }
 
