@@ -87,10 +87,11 @@ return;var name=child.name;var values=[];if('select-multiple'==child.type){var j
 values.push(option.value);}
 }else{values=child.value;}
 var keyBegin=name.indexOf('[');if(0 <=keyBegin){var n=name;var k=n.substr(0,n.indexOf('['));var a=n.substr(n.indexOf('['));if(typeof aFormValues[k]=='undefined')
-aFormValues[k]=[];var p=aFormValues;while(a.length!=0){var sa=a.substr(0,a.indexOf(']')+1);var lk=k;var lp=p;a=a.substr(a.indexOf(']')+1);p=p[k];k=sa.substr(1,sa.length-2);if(k==''){if('select-multiple'==child.type){k=lk;p=lp;}else{k=p.length;}
+aFormValues[k]={};var p=aFormValues;while(a.length!=0){var sa=a.substr(0,a.indexOf(']')+1);var lk=k;var lp=p;a=a.substr(a.indexOf(']')+1);p=p[k];k=sa.substr(1,sa.length-2);if(k==''){if('select-multiple'==child.type){k=lk;p=lp;}else{k=p.length;}
 }
-if(typeof p[k]=='undefined')
-p[k]=[];}
+if(typeof k=='undefined'){k=0;for(var i in lp[lk])k++;}
+if(typeof p[k]=='undefined'){p[k]={};}
+}
 p[k]=values;}else{aFormValues[name]=values;}
 }
 xajax.tools.stripOnPrefix=function(sEventName){sEventName=sEventName.toLowerCase();if(0==sEventName.indexOf('on'))
@@ -137,7 +138,7 @@ xajax.tools.queue.pop=function(theQ){var next=theQ.start;if(next==theQ.end)
 return null;next++;if(next > theQ.size)
 next=0;var obj=theQ.commands[theQ.start];delete theQ.commands[theQ.start];theQ.start=next;return obj;}
 xajax.responseProcessor={};xajax.tools.json={}
-xajax.tools.json.processFragment=function(nodes,seq,oRet,oRequest){var xx=xajax;var xt=xx.tools;for(nodeName in nodes){if('xjxobj'==nodeName){for(a in nodes[nodeName]){var obj=nodes[nodeName][a];obj.fullName='*unknown*';obj.sequence=seq;obj.request=oRequest;obj.context=oRequest.context;xt.queue.push(xx.response,obj);++seq;}
+xajax.tools.json.processFragment=function(nodes,seq,oRet,oRequest){var xx=xajax;var xt=xx.tools;for(nodeName in nodes){if('xjxobj'==nodeName){for(a in nodes[nodeName]){if(parseInt(a)!=a)continue;var obj=nodes[nodeName][a];obj.fullName='*unknown*';obj.sequence=seq;obj.request=oRequest;obj.context=oRequest.context;xt.queue.push(xx.response,obj);++seq;}
 }else if('xjxrv'==nodeName){oRet=nodes[nodeName];}else if('debugmsg'==nodeName){txt=nodes[nodeName];}else
 throw{code:10004,data:obj.fullName}
 }
