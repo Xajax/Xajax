@@ -11,6 +11,10 @@
 	
 	Please see <copyright.inc.php> for a detailed description, copyright
 	and license information.
+  
+  12-14-2013 Ed Robinson
+  altered _getFormValue to return alpha array indexes instead of empty array
+  at lines 873 and 894
 */
 
 /*
@@ -867,7 +871,8 @@ xajax.tools._getFormValue = function(aFormValues, child, submitDisabledElements,
 		var k = n.substr(0, n.indexOf('['));
 		var a = n.substr(n.indexOf('['));
 		if (typeof aFormValues[k] == 'undefined')
-			aFormValues[k] = [];
+			//aFormValues[k] = [];
+      aFormValues[k] = a == '[]' ? [] : {};
 		var p = aFormValues; // pointer reset
 		while (a.length != 0) {
 			var sa = a.substr(0, a.indexOf(']')+1);
@@ -887,7 +892,8 @@ xajax.tools._getFormValue = function(aFormValues, child, submitDisabledElements,
 				}
 			}
 			if (typeof p[k] == 'undefined')
-				p[k] = []; 
+				//p[k] = []; 
+        p[k] = a == '[]' ? [] : {};
 		}
 		p[k] = values;
 	} else {

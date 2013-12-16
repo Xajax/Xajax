@@ -87,10 +87,10 @@ return;var name=child.name;var values=[];if('select-multiple'==child.type){var j
 values.push(option.value);}
 }else{values=child.value;}
 var keyBegin=name.indexOf('[');if(0 <=keyBegin){var n=name;var k=n.substr(0,n.indexOf('['));var a=n.substr(n.indexOf('['));if(typeof aFormValues[k]=='undefined')
-aFormValues[k]=[];var p=aFormValues;while(a.length!=0){var sa=a.substr(0,a.indexOf(']')+1);var lk=k;var lp=p;a=a.substr(a.indexOf(']')+1);p=p[k];k=sa.substr(1,sa.length-2);if(k==''){if('select-multiple'==child.type){k=lk;p=lp;}else{k=p.length;}
+aFormValues[k]=a=='[]' ? []:{};var p=aFormValues;while(a.length!=0){var sa=a.substr(0,a.indexOf(']')+1);var lk=k;var lp=p;a=a.substr(a.indexOf(']')+1);p=p[k];k=sa.substr(1,sa.length-2);if(k==''){if('select-multiple'==child.type){k=lk;p=lp;}else{k=p.length;}
 }
 if(typeof p[k]=='undefined')
-p[k]=[];}
+p[k]=a=='[]' ? []:{};}
 p[k]=values;}else{aFormValues[name]=values;}
 }
 xajax.tools.stripOnPrefix=function(sEventName){sEventName=sEventName.toLowerCase();if(0==sEventName.indexOf('on'))
