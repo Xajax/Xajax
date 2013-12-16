@@ -1,7 +1,7 @@
 <?php
 /**
  * 2012-01-23
- * Trying out html name array
+ * xajax js compress tool
  */
 //Setup the xajax framework.
 include_once("xajax_core/xajax.inc.php");
