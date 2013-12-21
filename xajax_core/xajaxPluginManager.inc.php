@@ -427,7 +427,10 @@ final class xajaxPluginManager
 
 		if ($sJsURI != '' && substr($sJsURI, -1) != '/')
 			$sJsURI .= '/';
-		$sJsURI .= 'xajax_js/';
+                
+                if($this->bDeferScriptGeneration == true){
+                    $sJsURI .= 'xajax_js/';
+                }
 
 		$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_core.js'), 'xajax');
 
