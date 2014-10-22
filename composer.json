@@ -1,0 +1,29 @@
+{
+    "name": "Xajax/Xajax",
+    "type": "library",
+    "description": "Xajax is an open source PHP class library for easily creating powerful PHP-driven, web-based Ajax Applications. Using Xajax, you can asynchronously call PHP functions and update the content of your your webpage without reloading the page.",
+    "authors": [
+        {"name": "Jared White"},
+        {"name": "J. Max Wilson"},
+        {"name": "Joseph Woolley"},
+        {"name": "Steffen Konerow"}
+
+    ],
+    "homepage": "http://xajaxproject.org",
+    "license": "BSD-2-Clause",
+    "keywords": ["Xajax", "PHP", "Asynchronous"],
+    "support": {
+        "forum": "http://community.xajax-project.org",
+        "irc": "irc://irc.freenode.org/xajax",
+        "issues": "https://github.com/Xajax/Xajax/issues",
+        "source": "https://github.com/Xajax/Xajax"
+    },
+    "require": {
+        "php": ">=5.3.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "": "xajax_core/"
+        }
+    }
+}
