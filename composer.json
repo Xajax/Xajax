@@ -24,6 +24,9 @@
     "autoload": {
         "psr-0": {
             "": "xajax_core/"
-        }
+        },
+        "files": [
+            "xajax_core/xajax.inc.php"
+        ]
     }
 }
