@@ -1,5 +1,5 @@
 {
-    "name": "Xajax/Xajax",
+    "name": "xajax/xajax",
     "type": "library",
     "description": "Xajax is an open source PHP class library for easily creating powerful PHP-driven, web-based Ajax Applications. Using Xajax, you can asynchronously call PHP functions and update the content of your your webpage without reloading the page.",
     "authors": [
