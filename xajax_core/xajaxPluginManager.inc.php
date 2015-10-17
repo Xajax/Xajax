@@ -64,8 +64,10 @@ final class xajaxPluginManager
 	*/
 
 	private $sJsURI;
+	private $sJsDir;
 	public  $aJsFiles = array();
 	private $sDefer;
+	private $sDeferDir;
 	private $sRequestURI;
 	private $sStatusMessages;
 	private $sWaitCursor;
@@ -93,8 +95,10 @@ final class xajaxPluginManager
 		$this->aClientScriptGenerators = array();
 
 		$this->sJsURI = '';
+		$this->sJsDir = dirname(dirname(__FILE__)) . '/xajax_js';
 		$this->aJsFiles = array();
 		$this->sDefer = '';
+		$this->sDeferDir = 'deferred';
 		$this->sRequestURI = '';
 		$this->sStatusMessages = 'false';
 		$this->sWaitCursor = 'true';
@@ -214,7 +218,8 @@ final class xajaxPluginManager
 		}
 		else if ( $objPlugin instanceof xajaxResponsePlugin)
 		{
-			$this->aResponsePlugins[] = $objPlugin;
+			// The defined name of a response plugin is used as key in the plugin table
+			$this->aResponsePlugins[$objPlugin->getName()] = $objPlugin;
 		}
 		else
 		{
@@ -306,6 +311,8 @@ final class xajaxPluginManager
 
 		if ('javascript URI' == $sName) {
 			$this->sJsURI = $mValue;
+		} else if ('javascript Dir' == $sName) {
+			$this->sJsDir = $mValue;
 		} else if ("javascript files" == $sName) {
 			$this->aJsFiles = array_merge($this->aJsFiles,$mValue);
 		} else if ("scriptDefferal" == $sName) {
@@ -343,6 +350,8 @@ final class xajaxPluginManager
 				$this->bDeferScriptGeneration = $mValue;
 			else if ('deferred' == $mValue)
 				$this->bDeferScriptGeneration = $mValue;
+		} else if ('deferDirectory' == $sName) {
+			$this->sDeferDir = $mValue;
 		} else if ('language' == $sName) {
 			$this->sLanguage = $mValue;
 		} else if ('responseQueueSize' == $sName) {
@@ -425,23 +434,20 @@ final class xajaxPluginManager
 
 		$aJsFiles = $this->aJsFiles;
 
-		if ($sJsURI != '' && substr($sJsURI, -1) != '/')
+		if ($sJsURI == '' || substr($sJsURI, -1) != '/')
 			$sJsURI .= '/';
-                
-                if($this->bDeferScriptGeneration == true){
-                    $sJsURI .= 'xajax_js/';
-                }
+		// $sJsURI .= 'xajax/js/';
 
-		$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_core.js'), 'xajax');
+		$aJsFiles[] = array($this->_getScriptFilename('xajax_core.js'), 'xajax');
 
 		if (true === $this->bDebug)
-			$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_debug.js'), 'xajax.debug');
+			$aJsFiles[] = array($this->_getScriptFilename('xajax_debug.js'), 'xajax.debug');
 
 		if (true === $this->bVerboseDebug)
-			$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_verbose.js'), 'xajax.debug.verbose');
+			$aJsFiles[] = array($this->_getScriptFilename('xajax_verbose.js'), 'xajax.debug.verbose');
 
 		if (null !== $this->sLanguage)
-			$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_lang_' . $this->sLanguage . '.js'), 'xajax');
+			$aJsFiles[] = array($this->_getScriptFilename('xajax_lang_' . $this->sLanguage . '.js'), 'xajax');
 
 		$sCrLf = "\n";
 		echo $sCrLf;
@@ -566,14 +572,16 @@ final class xajaxPluginManager
 			$sHash = $this->generateHash();
 
 			$sOutFile = $sHash.'.js';
-			$sOutPath = dirname(dirname(__FILE__)).'/xajax_js/deferred/';
+			// $sOutPath = dirname(dirname(__FILE__)).'/xajax_js/deferred/';
+			$sOutPath = $this->sJsDir . '/' . $this->sDeferDir . '/';
 
 			if (!is_file($sOutPath.$sOutFile) )
 			{
 				ob_start();
 
 
-				$sInPath = dirname(dirname(__FILE__)).'/';
+				// $sInPath = dirname(dirname(__FILE__)).'/xajax_js/';
+				$sInPath = $this->sJsDir . '/';
 
 				foreach ($aJsFiles as $aJsFile) {
 
@@ -596,7 +604,7 @@ final class xajaxPluginManager
 			echo '<';
 			echo 'script type="text/javascript" src="';
 			echo $sJsURI;
-			echo 'deferred/';
+			echo $this->sDeferDir.'/';
 			echo $sOutFile;
 			echo '" ';
 			echo $this->sDefer;
@@ -679,6 +687,9 @@ final class xajaxPluginManager
 	*/
 	public function getResponsePlugin($sName)
 	{
+		// Since the defined name of a response plugin is used as key in the plugin table,
+		// the plugin instance in retrieved using the given name as key.
+		/*
 		$aKeys = array_keys($this->aResponsePlugins);
 		sort($aKeys);
 		foreach ($aKeys as $sKey)
@@ -686,6 +697,10 @@ final class xajaxPluginManager
 				return $this->aResponsePlugins[$sKey];
 		$bFailure = false;
 		return $bFailure;
+		*/
+		if(array_key_exists($sName, $this->aResponsePlugins))
+			return $this->aResponsePlugins[$sName];
+		return false;
 	}
 
 	/*
