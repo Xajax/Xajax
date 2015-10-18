@@ -1608,7 +1608,7 @@ class xajaxResponse
 		
 		Returns:
 		
-		object : The <xajaxResponse> command.
+		object : The <xajaxResponse> object.
 	*/
 	public function addCommand($aAttributes, $mData)
 	{
@@ -1640,6 +1640,22 @@ class xajaxResponse
 		} 
 		$aAttributes['data'] = $mData;
 		$this->aCommands[] = $aAttributes;
+
+		return $this;
+	}
+	
+	/*
+		Function: clearCommands
+		
+		Clear all the commands already added to the response.
+		
+		Returns:
+		
+		object : The <xajaxResponse> object.
+	*/
+	public function clearCommands()
+	{
+		$this->aCommands[] = array();
 
 		return $this;
 	}
