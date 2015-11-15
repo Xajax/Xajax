@@ -150,6 +150,11 @@ class xajaxResponse
 		return $this;
 	}
 
+	public function getCharacterEncoding()
+	{
+		return $this->sCharacterEncoding;
+	}
+	
 
 	/*
 		Function: setOutputEntities
