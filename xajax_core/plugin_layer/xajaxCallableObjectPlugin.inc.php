@@ -177,11 +177,9 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 		// Generate code for javascript classes declaration
 		if (0 < count($this->aClassPaths))
 		{
-			error_log("Starting to add classpaths");
 			$classes = array();
 			foreach($this->aClassPaths as $sClassPath)
 			{
-				error_log("Adding classpath $sClassPath");
 				$offset = 0;
 				$sClassPath .= '.';
 				while(($dotPosition = strpos($sClassPath, '.', $offset)) !== false)
@@ -190,7 +188,6 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 					// Generate code for this class
 					if(!array_key_exists($class, $classes))
 					{
-						error_log("Adding class $class");
 						echo "{$this->sXajaxPrefix}$class = {};";
 						$classes[$class] = $class;
 					}
