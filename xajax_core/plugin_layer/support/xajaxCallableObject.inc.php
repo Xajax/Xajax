@@ -34,6 +34,7 @@ final class xajaxCallableObject
 		A reference to the callable object.
 	*/
 	private $obj;
+	private $classpath = '';
 	
 	/*
 		Array: aConfiguration
@@ -91,6 +92,13 @@ final class xajaxCallableObject
 	*/
 	public function configure($sMethod, $sName, $sValue)
 	{
+		// Set the classpath
+		if($sName == 'classpath')
+		{
+			if($sValue != '')
+				$this->classpath = $sValue . '.';
+			return;
+		}
 		$sMethod = strtolower($sMethod);
 		
 		if (false == isset($this->aConfiguration[$sMethod]))
@@ -128,7 +136,7 @@ final class xajaxCallableObject
 				$bInclude = false;
 			if ($bInclude)
 				$aRequests[strtolower($sMethodName)] = 
-					new xajaxRequest("{$sXajaxPrefix}{$sClass}.{$sMethodName}");
+					new xajaxRequest("{$sXajaxPrefix}{$this->classpath}{$sClass}.{$sMethodName}");
 		}
 
 		return $aRequests;
@@ -146,6 +154,9 @@ final class xajaxCallableObject
 	public function generateClientScript($sXajaxPrefix)
 	{
 		$sClass = get_class($this->obj);
+
+		// Add the classpath to the prefix
+		$sXajaxPrefix .= $this->classpath;
 		
 		echo "{$sXajaxPrefix}{$sClass} = {};\n";
 		
@@ -163,7 +174,7 @@ final class xajaxCallableObject
 			{
 				echo "{$sXajaxPrefix}{$sClass}.{$sMethodName} = function() { ";
 				echo "return xajax.request( ";
-				echo "{ xjxcls: '{$sClass}', xjxmthd: '{$sMethodName}' }, ";
+				echo "{ xjxcls: '{$this->classpath}{$sClass}', xjxmthd: '{$sMethodName}' }, ";
 				echo "{ parameters: arguments";
 				
 				$sSeparator = ", ";

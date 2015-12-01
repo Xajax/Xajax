@@ -40,6 +40,11 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 	private $aCallableObjects;
 
 	/*
+		Array: aClassPaths
+	*/
+	private $aClassPaths;
+
+	/*
 		String: sXajaxPrefix
 	*/
 	private $sXajaxPrefix;
@@ -67,6 +72,7 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 	public function __construct()
 	{
 		$this->aCallableObjects = array();
+		$this->aClassPaths = array();
 
 		$this->sXajaxPrefix = 'xajax_';
 		$this->sDefer = '';
@@ -79,6 +85,14 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 		if (!empty($_GET['xjxmthd'])) $this->sRequestedMethod = $_GET['xjxmthd'];
 		if (!empty($_POST['xjxcls'])) $this->sRequestedClass = $_POST['xjxcls'];
 		if (!empty($_POST['xjxmthd'])) $this->sRequestedMethod = $_POST['xjxmthd'];
+	}
+
+	/*
+		Function: setRequestedClass
+	*/
+	public function setRequestedClass($sRequestedClass)
+	{
+		$this->sRequestedClass = $sRequestedClass;
 	}
 
 	/*
@@ -127,7 +141,11 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 					if (is_array($aArgs[2]))
 						foreach ($aArgs[2] as $sKey => $aValue)
 							foreach ($aValue as $sName => $sValue)
+							{
+								if($sName == 'classpath' && $sValue != '')
+									$this->aClassPaths[] = $sValue;
 								$xco->configure($sKey, $sName, $sValue);
+							}
 
 				$this->aCallableObjects[] = $xco;
 
@@ -156,6 +174,31 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 	*/
 	public function generateClientScript()
 	{
+		// Generate code for javascript classes declaration
+		if (0 < count($this->aClassPaths))
+		{
+			error_log("Starting to add classpaths");
+			$classes = array();
+			foreach($this->aClassPaths as $sClassPath)
+			{
+				error_log("Adding classpath $sClassPath");
+				$offset = 0;
+				$sClassPath .= '.';
+				while(($dotPosition = strpos($sClassPath, '.', $offset)) !== false)
+				{
+					$class = substr($sClassPath, 0, $dotPosition);
+					// Generate code for this class
+					if(!array_key_exists($class, $classes))
+					{
+						error_log("Adding class $class");
+						echo "{$this->sXajaxPrefix}$class = {};";
+						$classes[$class] = $class;
+					}
+					$offset += $dotPosition + 1;
+				}
+			}
+			$classes = null;
+		}
 
 		if (0 < count($this->aCallableObjects))
 		{
