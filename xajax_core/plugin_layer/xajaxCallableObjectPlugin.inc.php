@@ -181,7 +181,7 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 			foreach($this->aClassPaths as $sClassPath)
 			{
 				$offset = 0;
-				$sClassPath .= '.';
+				$sClassPath .= '.Null'; // This is a sentinel. The last token is not processed in the while loop.
 				while(($dotPosition = strpos($sClassPath, '.', $offset)) !== false)
 				{
 					$class = substr($sClassPath, 0, $dotPosition);
@@ -191,7 +191,7 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 						echo "{$this->sXajaxPrefix}$class = {};";
 						$classes[$class] = $class;
 					}
-					$offset += $dotPosition + 1;
+					$offset = $dotPosition + 1;
 				}
 			}
 			$classes = null;
