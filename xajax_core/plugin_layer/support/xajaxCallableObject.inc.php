@@ -33,7 +33,20 @@ final class xajaxCallableObject
 		
 		A reference to the callable object.
 	*/
-	private $obj;
+	private $callableObject;
+
+	/*
+		Object: reflexionClass
+		
+		The reflexion class of the callable object.
+	*/
+	private $reflexionClass;
+	
+	/*
+		String: classpath
+		
+		The path to the file where the callable object class is defined.
+	*/
 	private $classpath = '';
 	
 	/*
@@ -55,10 +68,22 @@ final class xajaxCallableObject
 	*/
 	public function __construct($obj)
 	{
-		$this->obj = $obj;
+		$this->callableObject = $obj;
+		$this->reflexionClass = new \ReflectionClass(get_class($this->callableObject));
 		$this->aConfiguration = array();
 	}
-	
+
+	/*
+		Function: getClassName
+		
+		Returns the class name of this callable object, without the namespace if any.
+	*/
+	private function getClassName()
+	{
+		// Get the class name without the namespace.
+		return $this->reflexionClass->getShortName();
+	}
+
 	/*
 		Function: getName
 		
@@ -67,16 +92,16 @@ final class xajaxCallableObject
 	*/
 	public function getName()
 	{
-		return get_class($this->obj);
+		return $this->getClassName();
 	}
 
 
 	public function getMethods()
 	{
 		$aReturn = array();
-		foreach (get_class_methods($this->obj) as $sMethodName)
+		foreach ($this->reflexionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $xMethod)
 		{
-			$aReturn[] =  $sMethodName;
+			$aReturn[] = $xMethod->getShortName();
 		}
 		return $aReturn;
 	}
@@ -101,7 +126,7 @@ final class xajaxCallableObject
 		}
 		$sMethod = strtolower($sMethod);
 		
-		if (false == isset($this->aConfiguration[$sMethod]))
+		if (!isset($this->aConfiguration[$sMethod]))
 			$this->aConfiguration[$sMethod] = array();
 			
 		$this->aConfiguration[$sMethod][$sName] = $sValue;
@@ -122,21 +147,19 @@ final class xajaxCallableObject
 	{
 		$aRequests = array();
 		
-		$sClass = get_class($this->obj);
+		$sClass = $this->getClassName();
 		
-		foreach (get_class_methods($this->obj) as $sMethodName)
+		foreach ($this->reflexionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $xMethod)
 		{
-			$bInclude = true;
-			// exclude magic __call, __construct, __destruct methods
-			if (2 < strlen($sMethodName))
-				if ("__" == substr($sMethodName, 0, 2))
-					$bInclude = false;
-			// exclude constructor
+			$sMethodName = $xMethod->getShortName();
+			// Exclude magic __call, __construct, __destruct methods
+			if (2 < strlen($sMethodName) && "__" == substr($sMethodName, 0, 2))
+				continue;
+			// Exclude constructor
 			if ($sClass == $sMethodName)
-				$bInclude = false;
-			if ($bInclude)
-				$aRequests[strtolower($sMethodName)] = 
-					new xajaxRequest("{$sXajaxPrefix}{$this->classpath}{$sClass}.{$sMethodName}");
+				continue;
+			$aRequests[strtolower($sMethodName)] = 
+				new xajaxRequest("{$sXajaxPrefix}{$this->classpath}{$sClass}.{$sMethodName}");
 		}
 
 		return $aRequests;
@@ -153,41 +176,38 @@ final class xajaxCallableObject
 	*/	
 	public function generateClientScript($sXajaxPrefix)
 	{
-		$sClass = get_class($this->obj);
+		$sClass = $this->getClassName();
 
 		// Add the classpath to the prefix
 		$sXajaxPrefix .= $this->classpath;
 		
 		echo "{$sXajaxPrefix}{$sClass} = {};\n";
 		
-		foreach (get_class_methods($this->obj) as $sMethodName)
+		foreach ($this->reflexionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $xMethod)
 		{
-			$bInclude = true;
-			// exclude magic __call, __construct, __destruct methods
-			if (2 < strlen($sMethodName))
-				if ("__" == substr($sMethodName, 0, 2))
-					$bInclude = false;
-			// exclude constructor
+			$sMethodName = $xMethod->getShortName();
+			// Exclude magic __call, __construct, __destruct methods
+			if (2 < strlen($sMethodName) && "__" == substr($sMethodName, 0, 2))
+				continue;
+			// Exclude constructor
 			if ($sClass == $sMethodName)
-				$bInclude = false;
-			if ($bInclude)
-			{
-				echo "{$sXajaxPrefix}{$sClass}.{$sMethodName} = function() { ";
-				echo "return xajax.request( ";
-				echo "{ xjxcls: '{$this->classpath}{$sClass}', xjxmthd: '{$sMethodName}' }, ";
-				echo "{ parameters: arguments";
-				
-				$sSeparator = ", ";
-				if (isset($this->aConfiguration['*']))
-					foreach ($this->aConfiguration['*'] as $sKey => $sValue)
-						echo "{$sSeparator}{$sKey}: {$sValue}";
-				if (isset($this->aConfiguration[strtolower($sMethodName)]))
-					foreach ($this->aConfiguration[strtolower($sMethodName)] as $sKey => $sValue)
-						echo "{$sSeparator}{$sKey}: {$sValue}";
+				continue;
+			// Print Js code for this method
+			echo "{$sXajaxPrefix}{$sClass}.{$sMethodName} = function() { ";
+			echo "return xajax.request( ";
+			echo "{ xjxcls: '{$this->classpath}{$sClass}', xjxmthd: '{$sMethodName}' }, ";
+			echo "{ parameters: arguments";
+			
+			$sSeparator = ", ";
+			if (isset($this->aConfiguration['*']))
+				foreach ($this->aConfiguration['*'] as $sKey => $sValue)
+					echo "{$sSeparator}{$sKey}: {$sValue}";
+			if (isset($this->aConfiguration[strtolower($sMethodName)]))
+				foreach ($this->aConfiguration[strtolower($sMethodName)] as $sKey => $sValue)
+					echo "{$sSeparator}{$sKey}: {$sValue}";
 
-				echo " } ); ";
-				echo "};\n";
-			}
+			echo " } ); ";
+			echo "};\n";
 		}
 	}
 	
@@ -206,7 +226,7 @@ final class xajaxCallableObject
 	*/
 	public function isClass($sClass)
 	{
-		if (get_class($this->obj) === $sClass)
+		if ($this->reflexionClass->getName() === $sClass)
 			return true;
 		return false;
 	}
@@ -226,7 +246,7 @@ final class xajaxCallableObject
 	*/
 	public function hasMethod($sMethod)
 	{
-		return method_exists($this->obj, $sMethod) || method_exists($this->obj, "__call");
+		return $this->reflexionClass->hasMethod($sMethod) || $this->reflexionClass->hasMethod('__call');
 	}
 	
 	/*
@@ -240,12 +260,10 @@ final class xajaxCallableObject
 	*/
 	public function call($sMethod, $aArgs)
 	{
+		if(!$this->hasMethod($sMethod))
+			return;
 		$objResponseManager = xajaxResponseManager::getInstance();
-		$objResponseManager->append(
-			call_user_func_array(
-				array($this->obj, $sMethod),
-				$aArgs
-				)
-			);
+		$reflexionMethod = $this->reflexionClass->getMethod($sMethod);
+		$objResponseManager->append($reflexionMethod->invokeArgs($this->callableObject, $aArgs));
 	}
 }
