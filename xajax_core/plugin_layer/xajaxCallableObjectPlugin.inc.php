@@ -127,27 +127,29 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 				$xco = $aArgs[1];
 
 //SkipDebug
-				if (false === is_object($xco))
+				if (!is_object($xco))
 				{
 					trigger_error("To register a callable object, please provide an instance of the desired class.", E_USER_WARNING);
 					return false;
 				}
 //EndSkipDebug
 
-				if (false === ($xco instanceof xajaxCallableObject))
+				if (!($xco instanceof xajaxCallableObject))
 					$xco = new xajaxCallableObject($xco);
 
-				if (2 < count($aArgs))
-					if (is_array($aArgs[2]))
-						foreach ($aArgs[2] as $sKey => $aValue)
-							foreach ($aValue as $sName => $sValue)
-							{
-								if($sName == 'classpath' && $sValue != '')
-									$this->aClassPaths[] = $sValue;
-								$xco->configure($sKey, $sName, $sValue);
-							}
-
-				$this->aCallableObjects[] = $xco;
+				if (2 < count($aArgs) && is_array($aArgs[2]))
+				{
+					foreach ($aArgs[2] as $sKey => $aValue)
+					{
+						foreach ($aValue as $sName => $sValue)
+						{
+							if($sName == 'classpath' && $sValue != '')
+								$this->aClassPaths[] = $sValue;
+							$xco->configure($sKey, $sName, $sValue);
+						}
+					}
+				}
+				$this->aCallableObjects[$xco->getName()] = $xco;
 
 				return $xco->generateRequests($this->sXajaxPrefix);
 			}
@@ -160,11 +162,11 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 	function generateHash()
 	{
 		$sHash = '';
-		foreach(array_keys($this->aCallableObjects) as $sKey)
-			$sHash .= $this->aCallableObjects[$sKey]->getName();
+		foreach($this->aCallableObjects as $xCallableObject)
+			$sHash .= $xCallableObject->getName();
 
-		foreach(array_keys($this->aCallableObjects) as $sKey)
-			$sHash .= implode('|',$this->aCallableObjects[$sKey]->getMethods());
+		foreach($this->aCallableObjects as $xCallableObject)
+			$sHash .= implode('|', $xCallableObject->getMethods());
 
 		return md5($sHash);
 	}
@@ -175,33 +177,27 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 	public function generateClientScript()
 	{
 		// Generate code for javascript classes declaration
-		if (0 < count($this->aClassPaths))
+		$classes = array();
+		foreach($this->aClassPaths as $sClassPath)
 		{
-			$classes = array();
-			foreach($this->aClassPaths as $sClassPath)
+			$offset = 0;
+			$sClassPath .= '.Null'; // This is a sentinel. The last token is not processed in the while loop.
+			while(($dotPosition = strpos($sClassPath, '.', $offset)) !== false)
 			{
-				$offset = 0;
-				$sClassPath .= '.Null'; // This is a sentinel. The last token is not processed in the while loop.
-				while(($dotPosition = strpos($sClassPath, '.', $offset)) !== false)
+				$class = substr($sClassPath, 0, $dotPosition);
+				// Generate code for this class
+				if(!array_key_exists($class, $classes))
 				{
-					$class = substr($sClassPath, 0, $dotPosition);
-					// Generate code for this class
-					if(!array_key_exists($class, $classes))
-					{
-						echo "{$this->sXajaxPrefix}$class = {};";
-						$classes[$class] = $class;
-					}
-					$offset = $dotPosition + 1;
+					echo "{$this->sXajaxPrefix}$class = {};";
+					$classes[$class] = $class;
 				}
+				$offset = $dotPosition + 1;
 			}
-			$classes = null;
 		}
+		$classes = null;
 
-		if (0 < count($this->aCallableObjects))
-		{
-			foreach(array_keys($this->aCallableObjects) as $sKey)
-				$this->aCallableObjects[$sKey]->generateClientScript($this->sXajaxPrefix);
-		}
+		foreach($this->aCallableObjects as $xCallableObject)
+			$xCallableObject->generateClientScript($this->sXajaxPrefix);
 	}
 
 	/*
@@ -230,17 +226,13 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 		$objArgumentManager = xajaxArgumentManager::getInstance();
 		$aArgs = $objArgumentManager->process();
 
-		foreach (array_keys($this->aCallableObjects) as $sKey)
+		if(array_key_exists($this->sRequestedClass, $this->aCallableObjects))
 		{
-			$xco = $this->aCallableObjects[$sKey];
-
-			if ($xco->isClass($this->sRequestedClass))
+			$xCallableObject = $this->aCallableObjects[$this->sRequestedClass];
+			if ($xCallableObject->hasMethod($this->sRequestedMethod))
 			{
-				if ($xco->hasMethod($this->sRequestedMethod))
-				{
-					$xco->call($this->sRequestedMethod, $aArgs);
-					return true;
-				}
+				$xCallableObject->call($this->sRequestedMethod, $aArgs);
+				return true;
 			}
 		}
 

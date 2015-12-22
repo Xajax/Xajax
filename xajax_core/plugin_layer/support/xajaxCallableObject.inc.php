@@ -92,7 +92,8 @@ final class xajaxCallableObject
 	*/
 	public function getName()
 	{
-		return $this->getClassName();
+		// Get the class name with the namespace.
+		return $this->reflexionClass->getName();
 	}
 
 
@@ -226,7 +227,7 @@ final class xajaxCallableObject
 	*/
 	public function isClass($sClass)
 	{
-		if ($this->reflexionClass->getName() === $sClass)
+		if ($this->getName() === $sClass)
 			return true;
 		return false;
 	}
