@@ -188,7 +188,7 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 				// Generate code for this class
 				if(!array_key_exists($class, $classes))
 				{
-					echo "{$this->sXajaxPrefix}$class = {};";
+					echo "{$this->sXajaxPrefix}$class = {};\n";
 					$classes[$class] = $class;
 				}
 				$offset = $dotPosition + 1;

@@ -162,6 +162,22 @@ class xajaxRequest
 	}
 	
 	/*
+		Function: setPageNumber
+		
+		Set the current value of the XAJAX_PAGE_NUMBER parameter.
+	*/
+	public function setPageNumber($nPageNumber)
+	{
+		// Set the value of the XAJAX_PAGE_NUMBER parameter
+		$nPageNumber = intval($nPageNumber);
+		if($this->nPageNumberIndex >= 0 && $nPageNumber > 0)
+		{
+			$this->aParameters[$this->nPageNumberIndex] = $nPageNumber;
+		}
+		return $this;
+	}
+	
+	/*
 		Function: addParameter
 		
 		Adds a parameter value to the parameter list for this request.
@@ -262,24 +278,13 @@ class xajaxRequest
 		
 		Parameters:
 		
-		nPageNumber - (number): The value of the parameters of type XAJAX_PAGE_NUMBER
+		nPageNumber - (number): The value of the parameter of type XAJAX_PAGE_NUMBER
 
 		Returns a string representation of the script output (javascript) from 
 		this request object.  See also:  <xajaxRequest::printScript>
 	*/
-	public function getScript($nPageNumber = 0)
+	public function getScript()
 	{
-		/*ob_start();
-		$this->printScript();
-		return ob_get_clean();*/
-
-		// Set the value of the XAJAX_PAGE_NUMBER parameter
-		$nPageNumber = intval($nPageNumber);
-		if($this->nPageNumberIndex >= 0 && $nPageNumber > 0)
-		{
-			$this->aParameters[$this->nPageNumberIndex] = $nPageNumber;
-		}
-
 		return $this->sName . '(' . implode(', ', $this->aParameters) . ')';
 	}
 		
@@ -288,27 +293,14 @@ class xajaxRequest
 		
 		Parameters:
 		
-		nPageNumber - (number): The value of the parameters of type XAJAX_PAGE_NUMBER
+		nPageNumber - (number): The value of the parameter of type XAJAX_PAGE_NUMBER
 
 		Generates a block of javascript code that can be used to invoke
 		the specified xajax request.
 	*/
-	public function printScript($nPageNumber = 0)
+	public function printScript()
 	{
-		/*echo $this->sName;
-		echo '(';
-		
-		$sSeparator = '';
-		
-		foreach ($this->aParameters as $sParameter)
-		{
-			echo $sSeparator;
-			echo $sParameter;
-			$sSeparator = ', ';
-		}
-		
-		echo ')';*/
-		echo $this->getScript($nPageNumber);
+		echo $this->getScript();
 	}
 }
 
@@ -381,7 +373,7 @@ class xajaxCustomRequest extends xajaxRequest
 	/*
 		Function: printScript
 	*/
-	function printScript($nPageNumber = 0)
+	function printScript()
 	{
 		$sScript = $this->sScript;
 		foreach ($this->aVariables as $sKey => $sValue)

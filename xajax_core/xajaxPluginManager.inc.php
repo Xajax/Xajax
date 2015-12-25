@@ -617,6 +617,17 @@ final class xajaxPluginManager
 		} else {
 
 
+			foreach ($aJsFiles as $aJsFile) {
+				echo '<';
+				echo 'script type="text/javascript" src="';
+				echo $sJsURI;
+				echo $aJsFile[0];
+				echo '" ';
+				echo $this->sDefer;
+				echo 'charset="UTF-8"><';
+				echo '/script>';
+				echo $sCrLf;
+			}
 
 			echo $sCrLf;
 			echo '<';
@@ -636,18 +647,6 @@ final class xajaxPluginManager
 			echo '<';
 			echo '/script>';
 			echo $sCrLf;
-
-			foreach ($aJsFiles as $aJsFile) {
-				echo '<';
-				echo 'script type="text/javascript" src="';
-				echo $sJsURI;
-				echo $aJsFile[0];
-				echo '" ';
-				echo $this->sDefer;
-				echo 'charset="UTF-8"><';
-				echo '/script>';
-				echo $sCrLf;
-			}
 		}
 	}
 
