@@ -135,7 +135,7 @@ final class xajaxCallableObject
 			return;
 		}
 		// Set the excluded methods
-		if($sName == 'exclude')
+		if($sName == 'excluded')
 		{
 			if(is_array($sValue))
 				$this->aExcludedMethods = $sValue;
