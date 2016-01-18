@@ -276,15 +276,12 @@ class xajaxResponse
 	*/
 	public function confirmCommands($iCmdNumber, $sMessage)
 	{
-		// Change message object to string before they are added to commands
-		if(is_object($sMessage))
-			$sMessage = $sMessage->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'cc',
 					'id'=>$iCmdNumber
 					),
-			$sMessage
+			(string)$sMessage
 			);
 	}
 	
@@ -307,16 +304,13 @@ class xajaxResponse
 	*/
 	public function assign($sTarget,$sAttribute,$sData)
 	{
-		// Change data object to string before they are added to commands
-		if(is_object($sData))
-			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'as',
-					'id'=>$sTarget,
-					'prop'=>$sAttribute
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sAttribute
 					),
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -338,16 +332,13 @@ class xajaxResponse
 	*/
 	public function append($sTarget,$sAttribute,$sData)
 	{	
-		// Change data object to string before they are added to commands
-		if(is_object($sData))
-			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'ap',
-					'id'=>$sTarget,
-					'prop'=>$sAttribute
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sAttribute
 					),
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -369,16 +360,13 @@ class xajaxResponse
 	*/
 	public function prepend($sTarget,$sAttribute,$sData)
 	{
-		// Change data object to string before they are added to commands
-		if(is_object($sData))
-			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'pp',
-					'id'=>$sTarget,
-					'prop'=>$sAttribute
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sAttribute
 					),
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -397,20 +385,15 @@ class xajaxResponse
 	*/
 	public function replace($sTarget,$sAttribute,$sSearch,$sData)
 	{
-		// Change data object to string before they are added to commands
-		if(is_object($sSearch))
-			$sSearch = $sSearch->__toString();
-		if(is_object($sData))
-			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'rp',
-					'id'=>$sTarget,
-					'prop'=>$sAttribute
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sAttribute
 					),
 			array(
-					's' => $sSearch,
-					'r' => $sData
+					's' => (string)$sSearch,
+					'r' => (string)$sData
 					)
 			);
 	}
@@ -433,8 +416,8 @@ class xajaxResponse
 	public function clear($sTarget,$sAttribute)
 	{
 		return $this->assign(
-			$sTarget,
-			$sAttribute,
+			(string)$sTarget,
+			(string)$sAttribute,
 			''
 			);
 	}
@@ -458,15 +441,12 @@ class xajaxResponse
 	*/
 	public function contextAssign($sAttribute, $sData)
 	{
-		// Change data object to string before they are added to commands
-		if(is_object($sData))
-			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'c:as', 
-					'prop'=>$sAttribute
+					'prop'=>(string)$sAttribute
 					), 
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -489,15 +469,12 @@ class xajaxResponse
 	*/
 	public function contextAppend($sAttribute, $sData)
 	{
-		// Change data object to string before they are added to commands
-		if(is_object($sData))
-			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'c:ap', 
-					'prop'=>$sAttribute
+					'prop'=>(string)$sAttribute
 					), 
-			$sData
+			(string)$sData
 			);
 	}	
 	
@@ -520,15 +497,12 @@ class xajaxResponse
 	*/
 	public function contextPrepend($sAttribute, $sData)
 	{
-		// Change data object to string before they are added to commands
-		if(is_object($sData))
-			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'c:pp', 
-					'prop'=>$sAttribute
+					'prop'=>(string)$sAttribute
 					), 
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -551,7 +525,7 @@ class xajaxResponse
 	public function contextClear($sAttribute)
 	{
 		return $this->contextAssign(
-			$sAttribute, 
+			(string)$sAttribute, 
 			''
 			);
 	}
@@ -571,14 +545,11 @@ class xajaxResponse
 	*/
 	public function alert($sMsg)
 	{
-		// Change data object to string before they are added to commands
-		if(is_object($sMsg))
-			$sMsg = $sMsg->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'al'
 					),
-			$sMsg
+			(string)$sMsg
 			);
 	}
 	
@@ -588,7 +559,7 @@ class xajaxResponse
 			array(
 					'cmd'=>'dbg'
 					),
-			$sMessage
+			(string)$sMessage
 			);
 	}
 	
@@ -678,14 +649,11 @@ class xajaxResponse
 	*/
 	public function script($sJS)
 	{
-		// Change data object to string before they are added to commands
-		if(is_object($sJS))
-			$sJS = $sJS->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'js'
 					),
-			$sJS
+			(string)$sJS
 			);
 	}
 	
@@ -734,7 +702,7 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'rm',
-					'id'=>$sTarget),
+					'id'=>(string)$sTarget),
 			''
 			);
 	}
@@ -763,10 +731,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ce',
-					'id'=>$sParent,
-					'prop'=>$sId
+					'id'=>(string)$sParent,
+					'prop'=>(string)$sId
 					),
-			$sTag
+			(string)$sTag
 			);
 	}
 	
@@ -792,10 +760,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ie',
-					'id'=>$sBefore,
-					'prop'=>$sId
+					'id'=>(string)$sBefore,
+					'prop'=>(string)$sId
 					),
-			$sTag
+			(string)$sTag
 			);
 	}
 	
@@ -821,10 +789,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ia',
-					'id'=>$sAfter,
-					'prop'=>$sId
+					'id'=>(string)$sAfter,
+					'prop'=>(string)$sId
 					),
-			$sTag
+			(string)$sTag
 			);
 	}
 	
@@ -849,11 +817,11 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ci',
-					'id'=>$sParent,
-					'prop'=>$sId,
-					'type'=>$sType
+					'id'=>(string)$sParent,
+					'prop'=>(string)$sId,
+					'type'=>(string)$sType
 					),
-			$sName
+			(string)$sName
 			);
 	}
 	
@@ -880,11 +848,11 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 				'cmd'=>'ii',
-				'id'=>$sBefore,
-				'prop'=>$sId,
-				'type'=>$sType
+				'id'=>(string)$sBefore,
+				'prop'=>(string)$sId,
+				'type'=>(string)$sType
 				),
-			$sName
+			(string)$sName
 			);
 	}
 	
@@ -911,11 +879,11 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 				'cmd'=>'iia',
-				'id'=>$sAfter,
-				'prop'=>$sId,
-				'type'=>$sType
+				'id'=>(string)$sAfter,
+				'prop'=>(string)$sId,
+				'type'=>(string)$sType
 				),
-			$sName
+			(string)$sName
 			);
 	}
 	
@@ -939,10 +907,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 				'cmd'=>'ev',
-				'id'=>$sTarget,
-				'prop'=>$sEvent
+				'id'=>(string)$sTarget,
+				'prop'=>(string)$sEvent
 				),
-			$sScript
+			(string)$sScript
 			);
 	}
 	
@@ -970,9 +938,9 @@ class xajaxResponse
 	public function addEvent($sTarget,$sEvent,$sScript)
 	{
 		return $this->setEvent(
-			$sTarget,
-			$sEvent,
-			$sScript
+			(string)$sTarget,
+			(string)$sEvent,
+			(string)$sScript
 			);
 	}
 	
@@ -998,10 +966,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ah',
-					'id'=>$sTarget,
-					'prop'=>$sEvent
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sEvent
 					),
-			$sHandler
+			(string)$sHandler
 			);
 	}
 	
@@ -1026,10 +994,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'rh',
-					'id'=>$sTarget,
-					'prop'=>$sEvent
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sEvent
 					),
-			$sHandler);
+			(string)$sHandler);
 	}
 	
 	/*
@@ -1050,16 +1018,13 @@ class xajaxResponse
 	*/
 	public function setFunction($sFunction, $sArgs, $sScript)
 	{
-		// Change data object to string before they are added to commands
-		if(is_object($sScript))
-			$sScript = $sScript->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'sf',
-					'func'=>$sFunction,
-					'prop'=>$sArgs
+					'func'=>(string)$sFunction,
+					'prop'=>(string)$sArgs
 					),
-			$sScript
+			(string)$sScript
 			);
 	}
 	
@@ -1089,9 +1054,9 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'wpf',
-					'func'=>$sFunction,
-					'prop'=>$sArgs,
-					'type'=>$sReturnValueVariable
+					'func'=>(string)$sFunction,
+					'prop'=>(string)$sArgs,
+					'type'=>(string)$sReturnValueVariable
 					),
 			$aScripts
 			);
@@ -1119,14 +1084,14 @@ class xajaxResponse
 		$command = array('cmd' => 'in');
 		
 		if (false === (null === $sType))
-			$command['type'] = $sType;
+			$command['type'] = (string)$sType;
 		
 		if (false === (null === $sId))
-			$command['elm_id'] = $sId;
+			$command['elm_id'] = (string)$sId;
 
 		return $this->addCommand(
 			$command,
-			$sFileName
+			(string)$sFileName
 			);
 	}
 	
@@ -1152,14 +1117,14 @@ class xajaxResponse
 		$command = array('cmd' => 'ino');
 		
 		if (false === (null === $sType))
-			$command['type'] = $sType;
+			$command['type'] = (string)$sType;
 		
 		if (false === (null === $sId))
-			$command['elm_id'] = $sId;
+			$command['elm_id'] = (string)$sId;
 			
 		return $this->addCommand(
 			$command,
-			$sFileName
+			(string)$sFileName
 			);
 	}
 	
@@ -1185,9 +1150,9 @@ class xajaxResponse
 		$this->addCommand(
 				array(
 					'cmd'=>'rjs',
-					'unld'=>$sUnload
+					'unld'=>(string)$sUnload
 					),
-				$sFileName
+				(string)$sFileName
 				);
 		return $this;
 	}
@@ -1215,11 +1180,11 @@ class xajaxResponse
 		$command = array('cmd' => 'css');
 		
 		if (false === (null === $sMedia))
-			$command['media'] = $sMedia;
+			$command['media'] = (string)$sMedia;
 		
 		return $this->addCommand(
 			$command,
-			$sFileName
+			(string)$sFileName
 			);
 	}
 	
@@ -1245,11 +1210,11 @@ class xajaxResponse
 		$command = array('cmd'=>'rcss');
 		
 		if (false === (null === $sMedia))
-			$command['media'] = $sMedia;
+			$command['media'] = (string)$sMedia;
 		
 		return $this->addCommand(
 			$command,
-			$sFileName
+			(string)$sFileName
 			);
 	}
 	
@@ -1315,7 +1280,7 @@ class xajaxResponse
 					'cmd'=>'wf',
 					'prop'=>$tenths
 					), 
-			$script
+			(string)$script
 			);
 	}
 	
