@@ -276,6 +276,9 @@ class xajaxResponse
 	*/
 	public function confirmCommands($iCmdNumber, $sMessage)
 	{
+		// Change message object to string before they are added to commands
+		if(is_object($sMessage))
+			$sMessage = $sMessage->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'cc',
@@ -304,6 +307,9 @@ class xajaxResponse
 	*/
 	public function assign($sTarget,$sAttribute,$sData)
 	{
+		// Change data object to string before they are added to commands
+		if(is_object($sData))
+			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'as',
@@ -332,6 +338,9 @@ class xajaxResponse
 	*/
 	public function append($sTarget,$sAttribute,$sData)
 	{	
+		// Change data object to string before they are added to commands
+		if(is_object($sData))
+			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'ap',
@@ -360,6 +369,9 @@ class xajaxResponse
 	*/
 	public function prepend($sTarget,$sAttribute,$sData)
 	{
+		// Change data object to string before they are added to commands
+		if(is_object($sData))
+			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'pp',
@@ -385,6 +397,11 @@ class xajaxResponse
 	*/
 	public function replace($sTarget,$sAttribute,$sSearch,$sData)
 	{
+		// Change data object to string before they are added to commands
+		if(is_object($sSearch))
+			$sSearch = $sSearch->__toString();
+		if(is_object($sData))
+			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'rp',
@@ -441,6 +458,9 @@ class xajaxResponse
 	*/
 	public function contextAssign($sAttribute, $sData)
 	{
+		// Change data object to string before they are added to commands
+		if(is_object($sData))
+			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'c:as', 
@@ -469,6 +489,9 @@ class xajaxResponse
 	*/
 	public function contextAppend($sAttribute, $sData)
 	{
+		// Change data object to string before they are added to commands
+		if(is_object($sData))
+			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'c:ap', 
@@ -497,6 +520,9 @@ class xajaxResponse
 	*/
 	public function contextPrepend($sAttribute, $sData)
 	{
+		// Change data object to string before they are added to commands
+		if(is_object($sData))
+			$sData = $sData->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'c:pp', 
@@ -545,6 +571,9 @@ class xajaxResponse
 	*/
 	public function alert($sMsg)
 	{
+		// Change data object to string before they are added to commands
+		if(is_object($sMsg))
+			$sMsg = $sMsg->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'al'
@@ -649,6 +678,9 @@ class xajaxResponse
 	*/
 	public function script($sJS)
 	{
+		// Change data object to string before they are added to commands
+		if(is_object($sJS))
+			$sJS = $sJS->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'js'
@@ -1018,6 +1050,9 @@ class xajaxResponse
 	*/
 	public function setFunction($sFunction, $sArgs, $sScript)
 	{
+		// Change data object to string before they are added to commands
+		if(is_object($sScript))
+			$sScript = $sScript->__toString();
 		return $this->addCommand(
 			array(
 					'cmd'=>'sf',
