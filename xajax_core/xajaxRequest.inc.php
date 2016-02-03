@@ -325,7 +325,7 @@ class xajaxCustomRequest extends xajaxRequest
 	var $sScript;
 	
 	/*
-		Function: xajaxCustomRequest
+		Function: __construct
 		
 		Constructs and initializes an instance of the object.
 		
@@ -336,7 +336,7 @@ class xajaxCustomRequest extends xajaxRequest
 		aVariables - (associative array, optional):  An array of variable name, 
 			value pairs that will be passed to <xajaxCustomRequest->setVariable>
 	*/
-	function xajaxCustomRequest($sScript)
+	function __construct($sScript)
 	{
 		$this->aVariables = array();
 		$this->sScript = $sScript;

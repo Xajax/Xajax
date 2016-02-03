@@ -74,14 +74,14 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 	var $sRequestedFunction;
 
 	/*
-		Function: xajaxFunctionPlugin
+		Function: __construct
 		
 		Constructs and initializes the <xajaxFunctionPlugin>.  The GET and POST
 		data is searched for xajax function call parameters.  This will later
 		be used to determine if the request is for a registered function in
 		<xajaxFunctionPlugin->canProcessRequest>
 	*/
-	function xajaxFunctionPlugin()
+	function __construct()
 	{
 		$this->aFunctions = array();
 

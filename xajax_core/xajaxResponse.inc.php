@@ -81,7 +81,7 @@ class xajaxResponse
 	private $sContentType = 'application/json'; //'text/xml';
 	
 	/*
-		Constructor: xajaxResponse
+		Constructor: __construct
 		
 		Create and initialize a xajaxResponse object.
 	*/
@@ -1995,7 +1995,7 @@ class xajaxCustomResponse
 	protected $sCharacterEncoding;
 	protected $bOutputEntities;
 	
-	function xajaxCustomResponse($sContentType)
+	public function __construct($sContentType)
 	{
 		$this->sOutput = '';
 		$this->sContentType = $sContentType;
