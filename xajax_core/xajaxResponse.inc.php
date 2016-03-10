@@ -108,12 +108,12 @@ class xajaxResponse
 		$this->objPluginManager = xajaxPluginManager::getInstance();
 	}
 	
-	function getResponseType()
+	public function getResponseType()
 	{
 		return $this->sResponseType;
 	}
 
-	function setResponseType($sResponseType) {
+	public function setResponseType($sResponseType) {
 		
 		if (NULL == $sResponseType) return;
 		

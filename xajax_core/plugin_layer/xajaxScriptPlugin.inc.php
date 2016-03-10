@@ -68,7 +68,7 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 		GET data (parameters passed on the request URI) and store them
 		for later use.
 	*/
-	function __construct()
+	public function __construct()
 	{
 		$this->sRequestURI = '';
 		$this->bDeferScriptGeneration = false;
@@ -104,7 +104,7 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 		- <deferScriptValidateHash> (boolean): A flag that indicates whether
 			or not the script hash should be validated.
 	*/
-	function configure($sName, $mValue)
+	public function configure($sName, $mValue)
 	{
 		if ('requestURI' == $sName) {
 			$this->sRequestURI = $mValue;
@@ -130,7 +130,7 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 		request URI contained an appropriate hash code and script deferral 
 		is in effect.
 	*/
-	function generateClientScript()
+	public function generateClientScript()
 	{
 	}
 	
@@ -141,12 +141,12 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 		process the current request.  This will return true when the
 		requestURI contains an appropriate hash code.
 	*/
-	function canProcessRequest()
+	public function canProcessRequest()
 	{
 		return false;
 	}
 	//todo: clean
-	function _getSections($sType)
+	public function _getSections($sType)
 	{
 	/*	$objPluginManager = xajaxPluginManager::getInstance();
 		
@@ -195,7 +195,7 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 		deferral is in effect.  If script deferral is disabled, this function returns 
 		without performing any functions.
 	*/
-	function processRequest()
+	public function processRequest()
 	{
 		if ($this->canProcessRequest())
 		{

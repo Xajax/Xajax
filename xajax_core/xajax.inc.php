@@ -292,7 +292,7 @@ final class xajax
 		<xajaxResponse> : A <xajaxResponse> object which can be used to return
 			response commands.  See also the <xajaxResponseManager> class.
 	*/
-	public static function &getGlobalResponse()
+	public static function getGlobalResponse()
 	{
 		static $obj;
 		if (!$obj) {
@@ -592,9 +592,7 @@ final class xajax
 			{
 				$bEndRequest = false;
 
-				$this->aProcessingEvents[XAJAX_PROCESSING_EVENT_BEFORE]->call(
-					array(&$bEndRequest)
-					);
+				$this->aProcessingEvents[XAJAX_PROCESSING_EVENT_BEFORE]->call(array(&$bEndRequest));
 
 				$mResult = (false === $bEndRequest);
 			}
@@ -615,9 +613,7 @@ final class xajax
 				{
 					$bEndRequest = false;
 
-					$this->aProcessingEvents[XAJAX_PROCESSING_EVENT_AFTER]->call(
-						array($bEndRequest)
-						);
+					$this->aProcessingEvents[XAJAX_PROCESSING_EVENT_AFTER]->call(array($bEndRequest));
 
 					if (true === $bEndRequest)
 					{

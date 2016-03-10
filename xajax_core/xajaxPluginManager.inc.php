@@ -126,7 +126,7 @@ final class xajaxPluginManager
 		object : a reference to the one and only instance of the
 			plugin manager.
 	*/
-	public static function &getInstance()
+	public static function getInstance()
 	{
 		static $obj;
 		if (!$obj) {

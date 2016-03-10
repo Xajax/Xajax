@@ -317,12 +317,12 @@ class xajaxCustomRequest extends xajaxRequest
 	/*
 		Array: aVariables;
 	*/
-	var $aVariables;
+	private $aVariables;
 	
 	/*
 		String: sScript;
 	*/
-	var $sScript;
+	private $sScript;
 	
 	/*
 		Function: __construct
@@ -336,7 +336,7 @@ class xajaxCustomRequest extends xajaxRequest
 		aVariables - (associative array, optional):  An array of variable name, 
 			value pairs that will be passed to <xajaxCustomRequest->setVariable>
 	*/
-	function __construct($sScript)
+	public function __construct($sScript)
 	{
 		$this->aVariables = array();
 		$this->sScript = $sScript;
@@ -348,7 +348,7 @@ class xajaxCustomRequest extends xajaxRequest
 		Clears the array of variables that will be used to modify the script before
 		it is printed and sent to the client.
 	*/
-	function clearVariables()
+	public function clearVariables()
 	{
 		$this->aVariables = array();
 	}
@@ -365,7 +365,7 @@ class xajaxCustomRequest extends xajaxRequest
 			$sValue - (string): Value
 		
 	*/
-	function setVariable($sName, $sValue)
+	public function setVariable($sName, $sValue)
 	{
 		$this->aVariables[$sName] = $sValue;
 	}
@@ -373,7 +373,7 @@ class xajaxCustomRequest extends xajaxRequest
 	/*
 		Function: printScript
 	*/
-	function printScript()
+	public function printScript()
 	{
 		$sScript = $this->sScript;
 		foreach ($this->aVariables as $sKey => $sValue)

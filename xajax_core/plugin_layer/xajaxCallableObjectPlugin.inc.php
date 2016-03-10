@@ -159,7 +159,7 @@ final class xajaxCallableObjectPlugin extends xajaxRequestPlugin
 	}
 
 
-	function generateHash()
+	public function generateHash()
 	{
 		$sHash = '';
 		foreach($this->aCallableObjects as $xCallableObject)

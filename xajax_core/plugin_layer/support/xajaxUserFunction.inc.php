@@ -94,9 +94,9 @@ final class xajaxUserFunction
 		Examples:
 		
 			$myFunction = array('alias', 'myClass', 'myMethod');
-			$myFunction = array('alias', &$myObject, 'myMethod');
+			$myFunction = array('alias', $myObject, 'myMethod');
 			$myFunction = array('myClass', 'myMethod');
-			$myFunction = array(&$myObject, 'myMethod');
+			$myFunction = array($myObject, 'myMethod');
 			$myFunction = 'myFunction';
 			
 			$myUserFunction = new xajaxUserFunction($myFunction, 'myFile.inc.php', array(
