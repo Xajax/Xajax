@@ -126,7 +126,7 @@ class xajaxResponsePlugin extends xajaxPlugin
 		A reference to the current <xajaxResponse> object that is being used
 		to build the response that will be sent to the client browser.
 	*/
-	private $objResponse;
+	protected $objResponse;
 	
 	/*
 		Function: setResponse
