@@ -50,7 +50,7 @@ class xajaxRequestPlugin extends xajaxPlugin
 		Plugins should store a local copy of the settings they wish to use during 
 		registration, client script generation or request processing.
 	*/
-	function configure($sName, $mValue)
+	public function configure($sName, $mValue)
 	{
 	}
 	
@@ -61,12 +61,12 @@ class xajaxRequestPlugin extends xajaxPlugin
 		or callable object is to be registered.  Additional plugins may support other 
 		registration types.
 	*/
-	function register($aArgs)
+	public function register($aArgs)
 	{
 		return false;
 	}
 
-	function generateHash()
+	public function generateHash()
 	{}
 
 	/*
@@ -77,7 +77,7 @@ class xajaxRequestPlugin extends xajaxPlugin
 		into the HEAD of the document.  Each block must be appropriately enclosed, meaning
 		javascript code must be enclosed in SCRIPT and /SCRIPT tags.
 	*/
-	function generateClientScript()
+	public function generateClientScript()
 	{
 	}
 	
@@ -87,7 +87,7 @@ class xajaxRequestPlugin extends xajaxPlugin
 		Called by the <xajaxPluginManager> when a request has been received to determine
 		if the request is for a xajax enabled function or for the initial page load.
 	*/
-	function canProcessRequest()
+	public function canProcessRequest()
 	{
 		return false;
 	}
@@ -102,7 +102,7 @@ class xajaxRequestPlugin extends xajaxPlugin
 		Returns:
 			false
 	*/
-	function processRequest()
+	public function processRequest()
 	{
 		return false;
 	}
@@ -126,7 +126,7 @@ class xajaxResponsePlugin extends xajaxPlugin
 		A reference to the current <xajaxResponse> object that is being used
 		to build the response that will be sent to the client browser.
 	*/
-	var $objResponse;
+	protected $objResponse;
 	
 	/*
 		Function: setResponse
@@ -138,7 +138,7 @@ class xajaxResponsePlugin extends xajaxPlugin
 		
 		objResponse - (object):  A reference to the <xajaxResponse> object
 	*/
-	function setResponse($objResponse)
+	public function setResponse($objResponse)
 	{
 		$this->objResponse = $objResponse;
 	}
@@ -150,7 +150,7 @@ class xajaxResponsePlugin extends xajaxPlugin
 		will call <xajaxResponse->addPluginCommand> using the reference provided
 		in <xajaxResponsePlugin->setResponse>.
 	*/
- 	function addCommand($aAttributes, $sData)
+ 	public function addCommand($aAttributes, $sData)
  	{
  		$this->objResponse->addPluginCommand($this, $aAttributes, $sData);
  	}
@@ -162,7 +162,7 @@ class xajaxResponsePlugin extends xajaxPlugin
 		This name must match the plugin name requested in the called to 
 		<xajaxResponse->plugin>.
 	*/
-	function getName()
+	public function getName()
 	{
 //SkipDebug
 		$objLanguageManager = xajaxLanguageManager::getInstance();
@@ -181,7 +181,7 @@ class xajaxResponsePlugin extends xajaxPlugin
 		determine which response command and parameters will be sent to the
 		client upon completion of the xajax request process.
 	*/
-	function process()
+	public function process()
 	{
 //SkipDebug
 		$objLanguageManager = xajaxLanguageManager::getInstance();

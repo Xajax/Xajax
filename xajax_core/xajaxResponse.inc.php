@@ -81,7 +81,7 @@ class xajaxResponse
 	private $sContentType = 'application/json'; //'text/xml';
 	
 	/*
-		Constructor: xajaxResponse
+		Constructor: __construct
 		
 		Create and initialize a xajaxResponse object.
 	*/
@@ -108,12 +108,12 @@ class xajaxResponse
 		$this->objPluginManager = xajaxPluginManager::getInstance();
 	}
 	
-	function getResponseType()
+	public function getResponseType()
 	{
 		return $this->sResponseType;
 	}
 
-	function setResponseType($sResponseType) {
+	public function setResponseType($sResponseType) {
 		
 		if (NULL == $sResponseType) return;
 		
@@ -150,6 +150,11 @@ class xajaxResponse
 		return $this;
 	}
 
+	public function getCharacterEncoding()
+	{
+		return $this->sCharacterEncoding;
+	}
+	
 
 	/*
 		Function: setOutputEntities
@@ -276,7 +281,7 @@ class xajaxResponse
 					'cmd'=>'cc',
 					'id'=>$iCmdNumber
 					),
-			$sMessage
+			(string)$sMessage
 			);
 	}
 	
@@ -302,10 +307,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'as',
-					'id'=>$sTarget,
-					'prop'=>$sAttribute
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sAttribute
 					),
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -330,10 +335,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ap',
-					'id'=>$sTarget,
-					'prop'=>$sAttribute
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sAttribute
 					),
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -358,10 +363,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'pp',
-					'id'=>$sTarget,
-					'prop'=>$sAttribute
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sAttribute
 					),
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -383,12 +388,12 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'rp',
-					'id'=>$sTarget,
-					'prop'=>$sAttribute
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sAttribute
 					),
 			array(
-					's' => $sSearch,
-					'r' => $sData
+					's' => (string)$sSearch,
+					'r' => (string)$sData
 					)
 			);
 	}
@@ -411,8 +416,8 @@ class xajaxResponse
 	public function clear($sTarget,$sAttribute)
 	{
 		return $this->assign(
-			$sTarget,
-			$sAttribute,
+			(string)$sTarget,
+			(string)$sAttribute,
 			''
 			);
 	}
@@ -439,9 +444,9 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'c:as', 
-					'prop'=>$sAttribute
+					'prop'=>(string)$sAttribute
 					), 
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -467,9 +472,9 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'c:ap', 
-					'prop'=>$sAttribute
+					'prop'=>(string)$sAttribute
 					), 
-			$sData
+			(string)$sData
 			);
 	}	
 	
@@ -495,9 +500,9 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'c:pp', 
-					'prop'=>$sAttribute
+					'prop'=>(string)$sAttribute
 					), 
-			$sData
+			(string)$sData
 			);
 	}
 	
@@ -520,7 +525,7 @@ class xajaxResponse
 	public function contextClear($sAttribute)
 	{
 		return $this->contextAssign(
-			$sAttribute, 
+			(string)$sAttribute, 
 			''
 			);
 	}
@@ -544,7 +549,7 @@ class xajaxResponse
 			array(
 					'cmd'=>'al'
 					),
-			$sMsg
+			(string)$sMsg
 			);
 	}
 	
@@ -554,7 +559,7 @@ class xajaxResponse
 			array(
 					'cmd'=>'dbg'
 					),
-			$sMessage
+			(string)$sMessage
 			);
 	}
 	
@@ -648,7 +653,7 @@ class xajaxResponse
 			array(
 					'cmd'=>'js'
 					),
-			$sJS
+			(string)$sJS
 			);
 	}
 	
@@ -697,7 +702,7 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'rm',
-					'id'=>$sTarget),
+					'id'=>(string)$sTarget),
 			''
 			);
 	}
@@ -726,10 +731,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ce',
-					'id'=>$sParent,
-					'prop'=>$sId
+					'id'=>(string)$sParent,
+					'prop'=>(string)$sId
 					),
-			$sTag
+			(string)$sTag
 			);
 	}
 	
@@ -755,10 +760,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ie',
-					'id'=>$sBefore,
-					'prop'=>$sId
+					'id'=>(string)$sBefore,
+					'prop'=>(string)$sId
 					),
-			$sTag
+			(string)$sTag
 			);
 	}
 	
@@ -784,10 +789,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ia',
-					'id'=>$sAfter,
-					'prop'=>$sId
+					'id'=>(string)$sAfter,
+					'prop'=>(string)$sId
 					),
-			$sTag
+			(string)$sTag
 			);
 	}
 	
@@ -812,11 +817,11 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ci',
-					'id'=>$sParent,
-					'prop'=>$sId,
-					'type'=>$sType
+					'id'=>(string)$sParent,
+					'prop'=>(string)$sId,
+					'type'=>(string)$sType
 					),
-			$sName
+			(string)$sName
 			);
 	}
 	
@@ -843,11 +848,11 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 				'cmd'=>'ii',
-				'id'=>$sBefore,
-				'prop'=>$sId,
-				'type'=>$sType
+				'id'=>(string)$sBefore,
+				'prop'=>(string)$sId,
+				'type'=>(string)$sType
 				),
-			$sName
+			(string)$sName
 			);
 	}
 	
@@ -874,11 +879,11 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 				'cmd'=>'iia',
-				'id'=>$sAfter,
-				'prop'=>$sId,
-				'type'=>$sType
+				'id'=>(string)$sAfter,
+				'prop'=>(string)$sId,
+				'type'=>(string)$sType
 				),
-			$sName
+			(string)$sName
 			);
 	}
 	
@@ -902,10 +907,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 				'cmd'=>'ev',
-				'id'=>$sTarget,
-				'prop'=>$sEvent
+				'id'=>(string)$sTarget,
+				'prop'=>(string)$sEvent
 				),
-			$sScript
+			(string)$sScript
 			);
 	}
 	
@@ -933,9 +938,9 @@ class xajaxResponse
 	public function addEvent($sTarget,$sEvent,$sScript)
 	{
 		return $this->setEvent(
-			$sTarget,
-			$sEvent,
-			$sScript
+			(string)$sTarget,
+			(string)$sEvent,
+			(string)$sScript
 			);
 	}
 	
@@ -961,10 +966,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'ah',
-					'id'=>$sTarget,
-					'prop'=>$sEvent
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sEvent
 					),
-			$sHandler
+			(string)$sHandler
 			);
 	}
 	
@@ -989,10 +994,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'rh',
-					'id'=>$sTarget,
-					'prop'=>$sEvent
+					'id'=>(string)$sTarget,
+					'prop'=>(string)$sEvent
 					),
-			$sHandler);
+			(string)$sHandler);
 	}
 	
 	/*
@@ -1016,10 +1021,10 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'sf',
-					'func'=>$sFunction,
-					'prop'=>$sArgs
+					'func'=>(string)$sFunction,
+					'prop'=>(string)$sArgs
 					),
-			$sScript
+			(string)$sScript
 			);
 	}
 	
@@ -1049,9 +1054,9 @@ class xajaxResponse
 		return $this->addCommand(
 			array(
 					'cmd'=>'wpf',
-					'func'=>$sFunction,
-					'prop'=>$sArgs,
-					'type'=>$sReturnValueVariable
+					'func'=>(string)$sFunction,
+					'prop'=>(string)$sArgs,
+					'type'=>(string)$sReturnValueVariable
 					),
 			$aScripts
 			);
@@ -1079,14 +1084,14 @@ class xajaxResponse
 		$command = array('cmd' => 'in');
 		
 		if (false === (null === $sType))
-			$command['type'] = $sType;
+			$command['type'] = (string)$sType;
 		
 		if (false === (null === $sId))
-			$command['elm_id'] = $sId;
+			$command['elm_id'] = (string)$sId;
 
 		return $this->addCommand(
 			$command,
-			$sFileName
+			(string)$sFileName
 			);
 	}
 	
@@ -1112,14 +1117,14 @@ class xajaxResponse
 		$command = array('cmd' => 'ino');
 		
 		if (false === (null === $sType))
-			$command['type'] = $sType;
+			$command['type'] = (string)$sType;
 		
 		if (false === (null === $sId))
-			$command['elm_id'] = $sId;
+			$command['elm_id'] = (string)$sId;
 			
 		return $this->addCommand(
 			$command,
-			$sFileName
+			(string)$sFileName
 			);
 	}
 	
@@ -1145,9 +1150,9 @@ class xajaxResponse
 		$this->addCommand(
 				array(
 					'cmd'=>'rjs',
-					'unld'=>$sUnload
+					'unld'=>(string)$sUnload
 					),
-				$sFileName
+				(string)$sFileName
 				);
 		return $this;
 	}
@@ -1175,11 +1180,11 @@ class xajaxResponse
 		$command = array('cmd' => 'css');
 		
 		if (false === (null === $sMedia))
-			$command['media'] = $sMedia;
+			$command['media'] = (string)$sMedia;
 		
 		return $this->addCommand(
 			$command,
-			$sFileName
+			(string)$sFileName
 			);
 	}
 	
@@ -1205,11 +1210,11 @@ class xajaxResponse
 		$command = array('cmd'=>'rcss');
 		
 		if (false === (null === $sMedia))
-			$command['media'] = $sMedia;
+			$command['media'] = (string)$sMedia;
 		
 		return $this->addCommand(
 			$command,
-			$sFileName
+			(string)$sFileName
 			);
 	}
 	
@@ -1275,7 +1280,7 @@ class xajaxResponse
 					'cmd'=>'wf',
 					'prop'=>$tenths
 					), 
-			$script
+			(string)$script
 			);
 	}
 	
@@ -1608,7 +1613,7 @@ class xajaxResponse
 		
 		Returns:
 		
-		object : The <xajaxResponse> command.
+		object : The <xajaxResponse> object.
 	*/
 	public function addCommand($aAttributes, $mData)
 	{
@@ -1640,6 +1645,22 @@ class xajaxResponse
 		} 
 		$aAttributes['data'] = $mData;
 		$this->aCommands[] = $aAttributes;
+
+		return $this;
+	}
+	
+	/*
+		Function: clearCommands
+		
+		Clear all the commands already added to the response.
+		
+		Returns:
+		
+		object : The <xajaxResponse> object.
+	*/
+	public function clearCommands()
+	{
+		$this->aCommands[] = array();
 
 		return $this;
 	}
@@ -1974,7 +1995,7 @@ class xajaxCustomResponse
 	protected $sCharacterEncoding;
 	protected $bOutputEntities;
 	
-	function xajaxCustomResponse($sContentType)
+	public function __construct($sContentType)
 	{
 		$this->sOutput = '';
 		$this->sContentType = $sContentType;

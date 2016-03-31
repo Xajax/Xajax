@@ -245,10 +245,10 @@ final class xajaxArgumentManager
 			$this->aArgs = $_GET['xjxargs'];
 		}
 		if (1 == get_magic_quotes_gpc())
-			array_walk($this->aArgs, array(&$this, '__argumentStripSlashes'));
+			array_walk($this->aArgs, array($this, '__argumentStripSlashes'));
 			
 
-		array_walk($this->aArgs, array(&$this, '__argumentDecode'));
+		array_walk($this->aArgs, array($this, '__argumentDecode'));
 	}
 	
 	/*
@@ -259,7 +259,7 @@ final class xajaxArgumentManager
 		object - A reference to an instance of this class.  This function is
 			used to implement the singleton pattern.
 	*/
-	public static function &getInstance()
+	public static function getInstance()
 	{
 		static $obj;
 		if (!$obj) {
@@ -328,7 +328,7 @@ final class xajaxArgumentManager
 					);
 			}
 			
-			$mFunction = array(&$this, '__argumentDecodeUTF8_' . $sFunction);
+			$mFunction = array($this, '__argumentDecodeUTF8_' . $sFunction);
 			
 			array_walk($this->aArgs, $mFunction);
 			$this->bDecodeUTF8Input = false;

@@ -62,7 +62,7 @@ final class xajaxUserFunction
 	private $aConfiguration;
 	
 	/*
-		Function: xajaxUserFunction
+		Function: __construct
 		
 		Constructs and initializes the <xajaxUserFunction> object.
 		
@@ -94,9 +94,9 @@ final class xajaxUserFunction
 		Examples:
 		
 			$myFunction = array('alias', 'myClass', 'myMethod');
-			$myFunction = array('alias', &$myObject, 'myMethod');
+			$myFunction = array('alias', $myObject, 'myMethod');
 			$myFunction = array('myClass', 'myMethod');
-			$myFunction = array(&$myObject, 'myMethod');
+			$myFunction = array($myObject, 'myMethod');
 			$myFunction = 'myFunction';
 			
 			$myUserFunction = new xajaxUserFunction($myFunction, 'myFile.inc.php', array(
@@ -106,7 +106,7 @@ final class xajaxUserFunction
 				
 			$xajax->register(XAJAX_FUNCTION, $myUserFunction);				
 	*/
-	public function xajaxUserFunction($uf) // /*deprecated parameters */ $sInclude=NULL, $aConfiguration=array())
+	public function __construct($uf) // /*deprecated parameters */ $sInclude=NULL, $aConfiguration=array())
 	{
 		$this->sAlias = '';
 		$this->uf = $uf;
