@@ -68,7 +68,7 @@ class xajaxScriptPlugin extends xajaxRequestPlugin
 		GET data (parameters passed on the request URI) and store them
 		for later use.
 	*/
-	function xajaxScriptPlugin()
+	function __function()
 	{
 		$this->sRequestURI = '';
 		$this->bDeferScriptGeneration = false;

@@ -30,11 +30,6 @@ final class xajaxIncludeClientScriptPlugin extends xajaxRequestPlugin
 {
 
 
-	public function xajaxIncludeClientScriptPlugin()
-	{
-
-	}
-
 	/*
 		Function: configure
 	*/
