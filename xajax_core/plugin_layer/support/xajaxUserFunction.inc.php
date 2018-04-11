@@ -106,7 +106,7 @@ final class xajaxUserFunction
 				
 			$xajax->register(XAJAX_FUNCTION, $myUserFunction);				
 	*/
-	public function xajaxUserFunction($uf) // /*deprecated parameters */ $sInclude=NULL, $aConfiguration=array())
+	public function __construct($uf) // /*deprecated parameters */ $sInclude=NULL, $aConfiguration=array())
 	{
 		$this->sAlias = '';
 		$this->uf = $uf;

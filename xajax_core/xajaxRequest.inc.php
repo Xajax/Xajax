@@ -312,8 +312,9 @@ class xajaxCustomRequest extends xajaxRequest
 		aVariables - (associative array, optional):  An array of variable name, 
 			value pairs that will be passed to <xajaxCustomRequest->setVariable>
 	*/
-	function xajaxCustomRequest($sScript)
+	function __construct($sScript)
 	{
+		parent::__construct();
 		$this->aVariables = array();
 		$this->sScript = $sScript;
 	}
