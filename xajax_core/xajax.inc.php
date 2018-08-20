@@ -947,7 +947,7 @@ final class xajax
 				} else {
 					$aURL['host'] = $_SERVER['HTTP_HOST'];
 				}
-			} else if (!empty($_SERVER['SERVER_NAME'])) {
+			} else if (!empty($_SERVER['SERVER_NAME']))	{
 				$aURL['host'] = $_SERVER['SERVER_NAME'];
 			} else {
 				echo $this->objLanguageManager->getText('DTCTURI:01');
@@ -956,8 +956,12 @@ final class xajax
 			}
 		}
 
-		if (empty($aURL['port']) && !empty($_SERVER['SERVER_PORT'])) {
-			$aURL['port'] = $_SERVER['SERVER_PORT'];
+		if (empty($aURL['port']))	{
+			if (!empty($_SERVER['HTTP_X_FORWARDED_PORT']))	{
+				$aURL['port'] = $_SERVER['HTTP_X_FORWARDED_PORT'];
+			} elseif (!empty($_SERVER['SERVER_PORT']))	{
+				$aURL['port'] = $_SERVER['SERVER_PORT'];
+			}
 		}
 
 		if (!empty($aURL['path']))
