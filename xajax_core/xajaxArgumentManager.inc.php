@@ -246,7 +246,7 @@ final class xajaxArgumentManager
 		}
 
 		//As of PHP 7.4 get_magic_quotes_gpc() is deprecated
-		if (PHP_VERSION < 70400 && 1 == get_magic_quotes_gpc()) {
+		if (PHP_VERSION_ID < 70400 && 1 == get_magic_quotes_gpc()) {
             array_walk($this->aArgs, array(&$this, '__argumentStripSlashes'));
         }
 
