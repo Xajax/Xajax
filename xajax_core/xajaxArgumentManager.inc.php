@@ -244,9 +244,11 @@ final class xajaxArgumentManager
 			$this->nMethod = XAJAX_METHOD_GET;
 			$this->aArgs = $_GET['xjxargs'];
 		}
-		if (1 == get_magic_quotes_gpc())
-			array_walk($this->aArgs, array(&$this, '__argumentStripSlashes'));
-			
+
+		//As of PHP 7.4 get_magic_quotes_gpc() is deprecated
+		if (PHP_VERSION_ID < 70400 && 1 == get_magic_quotes_gpc()) {
+            array_walk($this->aArgs, array(&$this, '__argumentStripSlashes'));
+        }
 
 		array_walk($this->aArgs, array(&$this, '__argumentDecode'));
 	}

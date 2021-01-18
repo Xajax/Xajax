@@ -81,7 +81,7 @@ class xajaxFunctionPlugin extends xajaxRequestPlugin
 		be used to determine if the request is for a registered function in
 		<xajaxFunctionPlugin->canProcessRequest>
 	*/
-	function xajaxFunctionPlugin()
+	function __construct()
 	{
 		$this->aFunctions = array();
 
