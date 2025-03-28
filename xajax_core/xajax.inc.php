@@ -1005,28 +1005,27 @@ final class xajax
 		}
 
 		// Add the path and the query string
-		$sURL.= $aURL['path'].@$aURL['query'];
+		$sURL.= $aURL['path'].($aURL['query'] ?? '');
 
 		// Clean up
 		unset($aURL);
 		
-		$aURL = explode("?", $sURL);
+		$aURL = explode('?', $sURL);
 		
-		if (1 < count($aURL))
-		{
-			$aQueries = explode("&", $aURL[1]);
+		if (1 < count($aURL)) {
+			$aQueries = explode('&', $aURL[1]);
 
-			foreach ($aQueries as $sKey => $sQuery)
-			{
-				if ("xjxGenerate" == substr($sQuery, 0, 11))
-					unset($aQueries[$sKey]);
+			foreach ($aQueries as $sKey => $sQuery) {
+				if ('xjxGenerate' === substr($sQuery, 0, 11)) {
+                    unset($aQueries[$sKey]);
+                }
 			}
 			
-			$sQueries = implode("&", $aQueries);
+			$sQueries = implode('&', $aQueries);
 			
 			$aURL[1] = $sQueries;
 			
-			$sURL = implode("?", $aURL);
+			$sURL = implode('?', $aURL);
 		}
 
 		return $sURL;
