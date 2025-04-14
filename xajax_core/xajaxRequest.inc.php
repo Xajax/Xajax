@@ -44,11 +44,21 @@ if (!defined ('XAJAX_ELEMENT_INNERHTML')) define ('XAJAX_ELEMENT_INNERHTML', 'ge
 */
 if (!defined ('XAJAX_QUOTED_VALUE')) define ('XAJAX_QUOTED_VALUE', 'quoted value');
 /*		
+	Constant: XAJAX_NUMERIC_VALUE
+		Specifies that the parameter will be a numeric, non-quoted value.
+*/
+if (!defined ('XAJAX_NUMERIC_VALUE')) define ('XAJAX_NUMERIC_VALUE', 'numeric value');
+/*		
 	Constant: XAJAX_JS_VALUE
 		Specifies that the parameter will be a non-quoted value (evaluated by the 
 		browsers javascript engine at run time.
 */
 if (!defined ('XAJAX_JS_VALUE')) define ('XAJAX_JS_VALUE', 'unquoted value');
+/*
+ Constant: XAJAX_PAGE_NUMBER
+ Specifies that the parameter will be an integer used to generate pagination links.
+ */
+if (!defined ('XAJAX_PAGE_NUMBER')) define ('XAJAX_PAGE_NUMBER', 'page number');
 
 /*
 	Class: xajaxRequest
@@ -88,6 +98,13 @@ class xajaxRequest
 	private $aParameters;
 	
 	/*
+		Integer: nPageNumberIndex
+	
+		The index of the XAJAX_PAGE_NUMBER parameter in the array.
+	*/
+	private $nPageNumberIndex;
+	
+	/*
 		Function: xajaxRequest
 		
 		Construct and initialize this request.
@@ -97,6 +114,7 @@ class xajaxRequest
 	public function __construct($sName)
 	{
 		$this->aParameters = array();
+		$this->nPageNumberIndex = -1;
 		$this->sQuoteCharacter = '"';
 		$this->sName = $sName;
 	}
@@ -134,6 +152,32 @@ class xajaxRequest
 	}
 	
 	/*
+		Function: hasPageNumber
+		
+		Returns true if the request has a parameter of type XAJAX_PAGE_NUMBER.
+	*/
+	public function hasPageNumber()
+	{
+		return ($this->nPageNumberIndex >= 0);
+	}
+	
+	/*
+		Function: setPageNumber
+		
+		Set the current value of the XAJAX_PAGE_NUMBER parameter.
+	*/
+	public function setPageNumber($nPageNumber)
+	{
+		// Set the value of the XAJAX_PAGE_NUMBER parameter
+		$nPageNumber = intval($nPageNumber);
+		if($this->nPageNumberIndex >= 0 && $nPageNumber > 0)
+		{
+			$this->aParameters[$this->nPageNumberIndex] = $nPageNumber;
+		}
+		return $this;
+	}
+	
+	/*
 		Function: addParameter
 		
 		Adds a parameter value to the parameter list for this request.
@@ -144,15 +188,9 @@ class xajaxRequest
 		See Also:
 		See <xajaxRequest->setParameter> for details.
 	*/
-	public function addParameter()
+	public function addParameter($sType, $sValue)
 	{
-		$aArgs = func_get_args();
-		
-		if (1 < count($aArgs))
-			$this->setParameter(
-				count($this->aParameters), 
-				$aArgs[0], 
-				$aArgs[1]);
+		$this->setParameter(count($this->aParameters), $sType, $sValue);
 	}
 	
 	/*
@@ -168,8 +206,8 @@ class xajaxRequest
 		
 		Note:
 		
-		Types should be one of the following <XAJAX_FORM_VALUES>, <XAJAX_QUOTED_VALUE>,
-		<XAJAX_JS_VALUE>, <XAJAX_INPUT_VALUE>, <XAJAX_CHECKED_VALUE>.  
+		Types should be one of the following <XAJAX_FORM_VALUES>, <XAJAX_QUOTED_VALUE>, <XAJAX_NUMERIC_VALUE>,
+		<XAJAX_JS_VALUE>, <XAJAX_INPUT_VALUE>, <XAJAX_CHECKED_VALUE>, <XAJAX_PAGE_NUMBER>.  
 		The value should be as follows:
 			<XAJAX_FORM_VALUES> - Use the ID of the form you want to process.
 			<XAJAX_QUOTED_VALUE> - The string data to be passed.
@@ -178,105 +216,91 @@ class xajaxRequest
 				javascript function call whose return value will become the parameter.
 				
 	*/
-	public function setParameter()
+	public function setParameter($nParameter, $sType, $sValue)
 	{
-		$aArgs = func_get_args();
-		
-		if (2 < count($aArgs))
+		switch($sType)
 		{
-			$nParameter = $aArgs[0];
-			$sType = $aArgs[1];
-			
-			if (XAJAX_FORM_VALUES == $sType)
-			{
-				$sFormID = $aArgs[2];
-				$this->aParameters[$nParameter] = 
-					"xajax.getFormValues(" 
-					. $this->sQuoteCharacter 
-					. $sFormID 
-					. $this->sQuoteCharacter 
-					. ")";
-			}
-			else if (XAJAX_INPUT_VALUE == $sType)
-			{
-				$sInputID = $aArgs[2];
-				$this->aParameters[$nParameter] = 
-					"xajax.$(" 
-					. $this->sQuoteCharacter 
-					. $sInputID 
-					. $this->sQuoteCharacter 
-					. ").value";
-			}
-			else if (XAJAX_CHECKED_VALUE == $sType)
-			{
-				$sCheckedID = $aArgs[2];
-				$this->aParameters[$nParameter] = 
-					"xajax.$(" 
-					. $this->sQuoteCharacter 
-					. $sCheckedID 
-					. $this->sQuoteCharacter 
-					. ").checked";
-			}
-			else if (XAJAX_ELEMENT_INNERHTML == $sType)
-			{
-				$sElementID = $aArgs[2];
-				$this->aParameters[$nParameter] = 
-					"xajax.$(" 
-					. $this->sQuoteCharacter 
-					. $sElementID 
-					. $this->sQuoteCharacter 
-					. ").innerHTML";
-			}
-			else if (XAJAX_QUOTED_VALUE == $sType)
-			{
-				$sValue = $aArgs[2];
-				$this->aParameters[$nParameter] = 
-					$this->sQuoteCharacter 
-					. $sValue 
-					. $this->sQuoteCharacter;
-			}
-			else if (XAJAX_JS_VALUE == $sType)
-			{
-				$sValue = $aArgs[2];
-				$this->aParameters[$nParameter] = $sValue;
-			}
+		case XAJAX_FORM_VALUES:
+			$sFormID = $sValue;
+			$this->aParameters[$nParameter] = 
+				"xajax.getFormValues(" 
+				. $this->sQuoteCharacter 
+				. $sFormID 
+				. $this->sQuoteCharacter 
+				. ")";
+			break;
+		case XAJAX_INPUT_VALUE:
+			$sInputID = $sValue;
+			$this->aParameters[$nParameter] = 
+				"xajax.$(" 
+				. $this->sQuoteCharacter 
+				. $sInputID 
+				. $this->sQuoteCharacter 
+				. ").value";
+			break;
+		case XAJAX_CHECKED_VALUE:
+			$sCheckedID = $sValue;
+			$this->aParameters[$nParameter] = 
+				"xajax.$(" 
+				. $this->sQuoteCharacter 
+				. $sCheckedID 
+				. $this->sQuoteCharacter 
+				. ").checked";
+			break;
+		case XAJAX_ELEMENT_INNERHTML:
+			$sElementID = $sValue;
+			$this->aParameters[$nParameter] = 
+				"xajax.$(" 
+				. $this->sQuoteCharacter 
+				. $sElementID 
+				. $this->sQuoteCharacter 
+				. ").innerHTML";
+			break;
+		case XAJAX_QUOTED_VALUE:
+			$this->aParameters[$nParameter] = 
+				$this->sQuoteCharacter 
+				. addslashes($sValue) 
+				. $this->sQuoteCharacter;
+			break;
+		case XAJAX_PAGE_NUMBER:
+			$this->nPageNumberIndex = $nParameter;
+			$this->aParameters[$nParameter] = $sValue;
+			break;
+		case XAJAX_NUMERIC_VALUE:
+		case XAJAX_JS_VALUE:
+			$this->aParameters[$nParameter] = $sValue;
+			break;
 		}
 	}
 
 	/*
 		Function: getScript
 		
+		Parameters:
+		
+		nPageNumber - (number): The value of the parameter of type XAJAX_PAGE_NUMBER
+
 		Returns a string representation of the script output (javascript) from 
 		this request object.  See also:  <xajaxRequest::printScript>
 	*/
 	public function getScript()
 	{
-		ob_start();
-		$this->printScript();
-		return ob_get_clean();
+		return $this->sName . '(' . implode(', ', $this->aParameters) . ')';
 	}
 		
 	/*
 		Function: printScript
 		
+		Parameters:
+		
+		nPageNumber - (number): The value of the parameter of type XAJAX_PAGE_NUMBER
+
 		Generates a block of javascript code that can be used to invoke
 		the specified xajax request.
 	*/
 	public function printScript()
 	{
-		echo $this->sName;
-		echo '(';
-		
-		$sSeparator = '';
-		
-		foreach ($this->aParameters as $sParameter)
-		{
-			echo $sSeparator;
-			echo $sParameter;
-			$sSeparator = ', ';
-		}
-		
-		echo ')';
+		echo $this->getScript();
 	}
 }
 
@@ -293,15 +317,15 @@ class xajaxCustomRequest extends xajaxRequest
 	/*
 		Array: aVariables;
 	*/
-	var $aVariables;
+	private $aVariables;
 	
 	/*
 		String: sScript;
 	*/
-	var $sScript;
+	private $sScript;
 	
 	/*
-		Function: xajaxCustomRequest
+		Function: __construct
 		
 		Constructs and initializes an instance of the object.
 		
@@ -312,7 +336,7 @@ class xajaxCustomRequest extends xajaxRequest
 		aVariables - (associative array, optional):  An array of variable name, 
 			value pairs that will be passed to <xajaxCustomRequest->setVariable>
 	*/
-	function xajaxCustomRequest($sScript)
+	public function __construct($sScript)
 	{
 		$this->aVariables = array();
 		$this->sScript = $sScript;
@@ -324,7 +348,7 @@ class xajaxCustomRequest extends xajaxRequest
 		Clears the array of variables that will be used to modify the script before
 		it is printed and sent to the client.
 	*/
-	function clearVariables()
+	public function clearVariables()
 	{
 		$this->aVariables = array();
 	}
@@ -341,7 +365,7 @@ class xajaxCustomRequest extends xajaxRequest
 			$sValue - (string): Value
 		
 	*/
-	function setVariable($sName, $sValue)
+	public function setVariable($sName, $sValue)
 	{
 		$this->aVariables[$sName] = $sValue;
 	}
@@ -349,7 +373,7 @@ class xajaxCustomRequest extends xajaxRequest
 	/*
 		Function: printScript
 	*/
-	function printScript()
+	public function printScript()
 	{
 		$sScript = $this->sScript;
 		foreach ($this->aVariables as $sKey => $sValue)

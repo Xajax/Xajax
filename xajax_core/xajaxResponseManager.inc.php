@@ -68,7 +68,7 @@ final class xajaxResponseManager
 		Implementation of the singleton pattern: provide a single instance of the <xajaxResponseManager>
 		to all who request it.
 	*/
-	public static function &getInstance()
+	public static function getInstance()
 	{
 		static $obj;
 		if (!$obj) {
