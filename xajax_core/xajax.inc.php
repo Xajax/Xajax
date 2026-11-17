@@ -365,6 +365,419 @@ final class xajax
 		
 		return $this->objPluginManager->register($aArgs);
 	}
+	/*
+		Function: registerFunction
+
+		Registers a function declared at global scope.  This is a deprecated alias
+		for <xajax->register>(XAJAX_FUNCTION, ...) kept for backwards compatibility
+		with code written against xajax 0.5.
+
+		Parameters:
+
+		$mFunction - (mixed): The name of the function, or a two element array
+			describing a class method.
+
+		$sIncludeFile - (string, optional): The path and file name of the include
+			file that contains the function.
+	*/
+	public function registerFunction($mFunction, $sIncludeFile=null)
+	{
+		$xuf = new xajaxUserFunction($mFunction);
+		if (null !== $sIncludeFile)
+			$xuf->configure('include', $sIncludeFile);
+		return $this->register(XAJAX_FUNCTION, $xuf);
+	}
+
+	/*
+		Function: registerCallableObject
+
+		Registers an object whose methods will be searched for a match to the
+		incoming request.  Deprecated alias for
+		<xajax->register>(XAJAX_CALLABLE_OBJECT, ...).
+
+		Parameters:
+
+		$oObject - (object): The object whose methods will be registered.
+	*/
+	public function registerCallableObject($oObject)
+	{
+		return $this->register(XAJAX_CALLABLE_OBJECT, $oObject);
+	}
+
+	/*
+		Function: registerExternalFunction
+
+		Registers a function that is defined in an external file which will be
+		included when the function is called.  Deprecated.
+
+		Parameters:
+
+		$mFunction - (mixed): The name of the function, or a two element array
+			describing a class method.
+
+		$sIncludeFile - (string): The path and file name of the include file.
+	*/
+	public function registerExternalFunction($mFunction, $sIncludeFile)
+	{
+		$xuf = new xajaxUserFunction($mFunction);
+		$xuf->configure('include', $sIncludeFile);
+		return $this->register(XAJAX_FUNCTION, $xuf);
+	}
+
+	/*
+		Function: registerCatchAllFunction
+
+		Registers a function to be called when an invalid request is received.
+		Deprecated.
+	*/
+	public function registerCatchAllFunction($mFunction)
+	{
+		if (is_array($mFunction))
+			array_shift($mFunction);
+		return $this->register(XAJAX_PROCESSING_EVENT, XAJAX_PROCESSING_EVENT_INVALID, $mFunction);
+	}
+
+	/*
+		Function: registerPreFunction
+
+		Registers a function to be called before processing a request.  Deprecated.
+	*/
+	public function registerPreFunction($mFunction)
+	{
+		if (is_array($mFunction))
+			array_shift($mFunction);
+		return $this->register(XAJAX_PROCESSING_EVENT, XAJAX_PROCESSING_EVENT_BEFORE, $mFunction);
+	}
+
+	/*
+		Function: setCallableObject
+
+		Deprecated alias for <xajax->registerCallableObject>.
+	*/
+	public function setCallableObject($oObject)
+	{
+		return $this->register(XAJAX_CALLABLE_OBJECT, $oObject);
+	}
+
+	/*
+		Function: processRequests
+
+		Deprecated alias for <xajax->processRequest>.
+	*/
+	public function processRequests()
+	{
+		return $this->processRequest();
+	}
+
+	/*
+		Function: canProcessRequests
+
+		Deprecated alias for <xajax->canProcessRequest>.
+	*/
+	public function canProcessRequests()
+	{
+		return $this->canProcessRequest();
+	}
+
+	/*
+		Function: getRequestURI
+
+		Deprecated accessor for the configured request URI.
+	*/
+	public function getRequestURI()
+	{
+		return $this->getConfiguration('requestURI');
+	}
+
+	/*
+		Function: setRequestURI
+
+		Deprecated alias for <xajax->configure>('requestURI', ...).
+	*/
+	public function setRequestURI($sRequestURI)
+	{
+		return $this->configure('requestURI', $sRequestURI);
+	}
+
+	/*
+		Function: getWrapperPrefix
+
+		Deprecated accessor for the configured wrapper prefix.
+	*/
+	public function getWrapperPrefix()
+	{
+		return $this->getConfiguration('wrapperPrefix');
+	}
+
+	/*
+		Function: setWrapperPrefix
+
+		Deprecated alias for <xajax->configure>('wrapperPrefix', ...).
+	*/
+	public function setWrapperPrefix($sWrapperPrefix)
+	{
+		return $this->configure('wrapperPrefix', $sWrapperPrefix);
+	}
+
+	/*
+		Function: getCharEncoding
+
+		Deprecated accessor for the configured character encoding.
+	*/
+	public function getCharEncoding()
+	{
+		return $this->getConfiguration('characterEncoding');
+	}
+
+	/*
+		Function: setCharEncoding
+
+		Deprecated alias for <xajax->configure>('characterEncoding', ...).
+	*/
+	public function setCharEncoding($sEncoding)
+	{
+		return $this->configure('characterEncoding', $sEncoding);
+	}
+
+	/*
+		Function: getLogFile
+
+		Deprecated accessor for the configured log file.
+	*/
+	public function getLogFile()
+	{
+		return $this->getConfiguration('logFile');
+	}
+
+	/*
+		Function: setLogFile
+
+		Deprecated alias for <xajax->configure>('logFile', ...).
+	*/
+	public function setLogFile($sLogFile)
+	{
+		return $this->configure('logFile', $sLogFile);
+	}
+
+	/*
+		Function: getDefaultMode
+
+		Deprecated accessor for the configured default request mode.
+	*/
+	public function getDefaultMode()
+	{
+		return $this->getConfiguration('defaultMode');
+	}
+
+	/*
+		Function: setDefaultMode
+
+		Deprecated alias for <xajax->configure>('defaultMode', ...).
+	*/
+	public function setDefaultMode($sDefaultMode)
+	{
+		return $this->configure('defaultMode', $sDefaultMode);
+	}
+
+	/*
+		Function: getDefaultMethod
+
+		Deprecated accessor for the configured default request method.
+	*/
+	public function getDefaultMethod()
+	{
+		return $this->getConfiguration('defaultMethod');
+	}
+
+	/*
+		Function: setDefaultMethod
+
+		Deprecated alias for <xajax->configure>('defaultMethod', ...).
+	*/
+	public function setDefaultMethod($sDefaultMethod)
+	{
+		return $this->configure('defaultMethod', $sDefaultMethod);
+	}
+
+	/*
+		Function: getFlag
+
+		Deprecated accessor for a configured flag.
+	*/
+	public function getFlag($sName)
+	{
+		return $this->getConfiguration($sName);
+	}
+
+	/*
+		Function: setFlag
+
+		Deprecated alias for <xajax->configure>($sName, $mValue).
+	*/
+	public function setFlag($sName, $mValue)
+	{
+		return $this->configure($sName, $mValue);
+	}
+
+	/*
+		Function: setFlags
+
+		Deprecated bulk setter; accepts an associative array of options.
+	*/
+	public function setFlags($aFlags)
+	{
+		foreach ($aFlags as $sName => $mValue)
+			$this->configure($sName, $mValue);
+		return true;
+	}
+
+	/*
+		Function: debugOn
+
+		Deprecated alias for <xajax->configure>('debug', true).
+	*/
+	public function debugOn()
+	{
+		return $this->configure('debug', true);
+	}
+
+	/*
+		Function: debugOff
+
+		Deprecated alias for <xajax->configure>('debug', false).
+	*/
+	public function debugOff()
+	{
+		return $this->configure('debug', false);
+	}
+
+	/*
+		Function: statusMessagesOn
+	*/
+	public function statusMessagesOn()
+	{
+		return $this->configure('statusMessages', true);
+	}
+
+	/*
+		Function: statusMessagesOff
+	*/
+	public function statusMessagesOff()
+	{
+		return $this->configure('statusMessages', false);
+	}
+
+	/*
+		Function: waitCursorOn
+	*/
+	public function waitCursorOn()
+	{
+		return $this->configure('waitCursor', true);
+	}
+
+	/*
+		Function: waitCursorOff
+	*/
+	public function waitCursorOff()
+	{
+		return $this->configure('waitCursor', false);
+	}
+
+	/*
+		Function: exitAllowedOn
+	*/
+	public function exitAllowedOn()
+	{
+		return $this->configure('exitAllowed', true);
+	}
+
+	/*
+		Function: exitAllowedOff
+	*/
+	public function exitAllowedOff()
+	{
+		return $this->configure('exitAllowed', false);
+	}
+
+	/*
+		Function: errorHandlerOn
+	*/
+	public function errorHandlerOn()
+	{
+		return $this->configure('errorHandler', true);
+	}
+
+	/*
+		Function: errorHandlerOff
+	*/
+	public function errorHandlerOff()
+	{
+		return $this->configure('errorHandler', false);
+	}
+
+	/*
+		Function: cleanBufferOn
+	*/
+	public function cleanBufferOn()
+	{
+		return $this->configure('cleanBuffer', true);
+	}
+
+	/*
+		Function: cleanBufferOff
+	*/
+	public function cleanBufferOff()
+	{
+		return $this->configure('cleanBuffer', false);
+	}
+
+	/*
+		Function: decodeUTF8InputOn
+	*/
+	public function decodeUTF8InputOn()
+	{
+		return $this->configure('decodeUTF8Input', true);
+	}
+
+	/*
+		Function: decodeUTF8InputOff
+	*/
+	public function decodeUTF8InputOff()
+	{
+		return $this->configure('decodeUTF8Input', false);
+	}
+
+	/*
+		Function: outputEntitiesOn
+	*/
+	public function outputEntitiesOn()
+	{
+		return $this->configure('outputEntities', true);
+	}
+
+	/*
+		Function: outputEntitiesOff
+	*/
+	public function outputEntitiesOff()
+	{
+		return $this->configure('outputEntities', false);
+	}
+
+	/*
+		Function: allowBlankResponseOn
+	*/
+	public function allowBlankResponseOn()
+	{
+		return $this->configure('allowBlankResponse', true);
+	}
+
+	/*
+		Function: allowBlankResponseOff
+	*/
+	public function allowBlankResponseOff()
+	{
+		return $this->configure('allowBlankResponse', false);
+	}
 
 	/*
 		Function: configure

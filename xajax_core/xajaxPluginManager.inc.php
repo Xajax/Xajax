@@ -427,10 +427,6 @@ final class xajaxPluginManager
 
 		if ($sJsURI != '' && substr($sJsURI, -1) != '/')
 			$sJsURI .= '/';
-                
-                if($this->bDeferScriptGeneration == true){
-                    $sJsURI .= 'xajax_js/';
-                }
 
 		$aJsFiles[] = array($this->_getScriptFilename('xajax_js/xajax_core.js'), 'xajax');
 
@@ -560,14 +556,11 @@ final class xajaxPluginManager
 		echo $sCrLf;
 
 
+		$sOutPath = dirname(dirname(__FILE__)).'/xajax_js/deferred/';
+		$sOutFile = $this->generateHash().'.js';
+
 		if (true === $this->bDeferScriptGeneration)
 		{
-
-			$sHash = $this->generateHash();
-
-			$sOutFile = $sHash.'.js';
-			$sOutPath = dirname(dirname(__FILE__)).'/xajax_js/deferred/';
-
 			if (!is_dir($sOutPath))
 				@mkdir($sOutPath, 0777, true);
 
@@ -575,11 +568,9 @@ final class xajaxPluginManager
 			{
 				ob_start();
 
-
 				$sInPath = dirname(dirname(__FILE__)).'/';
 
 				foreach ($aJsFiles as $aJsFile) {
-
 					print file_get_contents($sInPath.$aJsFile[0]);
 				}
 				print $sCrLf;
@@ -591,24 +582,26 @@ final class xajaxPluginManager
 				require_once(dirname(__FILE__) . '/xajaxCompress.inc.php');
 				$sScriptCode = xajaxCompressFile( $sScriptCode );
 
-				file_put_contents($sOutPath.$sOutFile,$sScriptCode);
+				@file_put_contents($sOutPath.$sOutFile,$sScriptCode);
 			}
+		}
 
-
-
+		// Fall back to inline generation when the deferred script could not be
+		// written (for example, when xajax_js/deferred/ is not writable by the web
+		// server user).  Emitting a <script src> for a file that does not exist
+		// would silently leave the page without the xajax client library.
+		if (true === $this->bDeferScriptGeneration && is_file($sOutPath.$sOutFile))
+		{
 			echo '<';
 			echo 'script type="text/javascript" src="';
 			echo $sJsURI;
-			echo 'deferred/';
+			echo 'xajax_js/deferred/';
 			echo $sOutFile;
 			echo '" ';
 			echo $this->sDefer;
 			echo 'charset="UTF-8"><';
 			echo '/script>';
 			echo $sCrLf;
-
-
-
 		} else {
 
 

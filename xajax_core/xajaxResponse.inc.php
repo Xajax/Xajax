@@ -1971,6 +1971,57 @@ class xajaxResponse
 		return $aData;
 	}
 	
+	/*
+		The methods below are deprecated aliases for the response methods above.
+		They were part of xajax 0.5 (and the legacyXajaxResponse class in the 0.5
+		distribution) and are retained for backwards compatibility with older
+		applications.  Each simply forwards its arguments to the current method.
+	*/
+
+	public function addAssign()				{ $a = func_get_args(); return call_user_func_array(array($this, 'assign'), $a); }
+	public function addAppend()				{ $a = func_get_args(); return call_user_func_array(array($this, 'append'), $a); }
+	public function addPrepend()			{ $a = func_get_args(); return call_user_func_array(array($this, 'prepend'), $a); }
+	public function addReplace()			{ $a = func_get_args(); return call_user_func_array(array($this, 'replace'), $a); }
+	public function addClear()				{ $a = func_get_args(); return call_user_func_array(array($this, 'clear'), $a); }
+	public function addAlert()				{ $a = func_get_args(); return call_user_func_array(array($this, 'alert'), $a); }
+	public function addRedirect()			{ $a = func_get_args(); return call_user_func_array(array($this, 'redirect'), $a); }
+	public function addScript()				{ $a = func_get_args(); return call_user_func_array(array($this, 'script'), $a); }
+	public function addScriptCall()			{ $a = func_get_args(); return call_user_func_array(array($this, 'call'), $a); }
+	public function addRemove()				{ $a = func_get_args(); return call_user_func_array(array($this, 'remove'), $a); }
+	public function addCreate()				{ $a = func_get_args(); return call_user_func_array(array($this, 'create'), $a); }
+	public function addInsert()				{ $a = func_get_args(); return call_user_func_array(array($this, 'insert'), $a); }
+	public function addInsertAfter()		{ $a = func_get_args(); return call_user_func_array(array($this, 'insertAfter'), $a); }
+	public function addCreateInput()		{ $a = func_get_args(); return call_user_func_array(array($this, 'createInput'), $a); }
+	public function addInsertInput()		{ $a = func_get_args(); return call_user_func_array(array($this, 'insertInput'), $a); }
+	public function addInsertInputAfter()	{ $a = func_get_args(); return call_user_func_array(array($this, 'insertInputAfter'), $a); }
+	public function addRemoveHandler()		{ $a = func_get_args(); return call_user_func_array(array($this, 'removeHandler'), $a); }
+	public function addIncludeScript()		{ $a = func_get_args(); return call_user_func_array(array($this, 'includeScript'), $a); }
+	public function addIncludeCSS()			{ $a = func_get_args(); return call_user_func_array(array($this, 'includeCSS'), $a); }
+	public function addConfirmCommands()	{ $a = func_get_args(); return call_user_func_array(array($this, 'confirmCommands'), $a); }
+
+	/*
+		Function: outputEntitiesOn
+
+		Deprecated alias for <xajaxResponse->setOutputEntities>(true).
+	*/
+	public function outputEntitiesOn()		{ return $this->setOutputEntities(true); }
+
+	/*
+		Function: outputEntitiesOff
+
+		Deprecated alias for <xajaxResponse->setOutputEntities>(false).
+	*/
+	public function outputEntitiesOff()		{ return $this->setOutputEntities(false); }
+
+	/*
+		Function: getXML
+
+		Returns a reference to this response object.  Retained for backwards
+		compatibility with xajax 0.5, where the XML payload was retrieved from
+		the response object itself.
+	*/
+	public function &getXML()				{ return $this; }
+
 }// end class xajaxResponse
 
 class xajaxCustomResponse
