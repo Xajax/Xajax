@@ -13,6 +13,13 @@
  * `require_once 'legacy.inc.php'` statements, keep working unchanged.
  */
 
+// The legacy classes subclass the current core classes, so make sure those are
+// loaded even when the caller only did require_once 'legacy.inc.php'.
+if (!class_exists('xajax', false))
+	require_once dirname(__FILE__) . '/xajax.inc.php';
+if (!class_exists('xajaxResponse', false))
+	require_once dirname(__FILE__) . '/xajaxResponse.inc.php';
+
 if (!class_exists('legacyXajaxResponse', false)) {
 
 	class legacyXajaxResponse extends xajaxResponse
