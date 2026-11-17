@@ -567,7 +567,7 @@ class xajaxControlContainer extends xajaxControl
 	*/
 	public function getClass()
 	{
-		$sClass = xajaxControl::getClass();
+		$sClass = parent::getClass();
 		
 		if (0 < count($this->aChildren) && '%flow' == $sClass)
 			return $this->getContentClass();

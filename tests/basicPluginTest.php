@@ -15,7 +15,7 @@ class testPlugin extends xajaxResponsePlugin
 {
 	var $sDefer;
 
-	function testPlugin()
+	function __construct()
 	{
 		$this->sDefer = '';
 	}

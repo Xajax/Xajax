@@ -1,5 +1,6 @@
 <?php
-		define('FILE_APPEND', 1);
+if (false == defined('FILE_APPEND'))
+	define('FILE_APPEND', 1);
 
 /*
 	File: comet.inc.php
@@ -57,12 +58,14 @@ class clsCometStreaming extends xajaxResponsePlugin
 	
 	
 	var  $fTimeOut;
+
+	var  $aCommands = array();
 	/*
 		Function: clsTableUpdater
 		
 		Constructs and initializes an instance of the table updater class.
 	*/
-	function clsCometStreaming()
+	function __construct()
 	{
 		$this->sDefer = '';
 		$this->sJavascriptURI = '';
@@ -132,7 +135,7 @@ class xajaxCometResponse extends xajaxResponse
 		calls  parent function xajaxResponse();
 	*/
 	
-	function xajaxCometResponse($fTimeOut=false)
+	function __construct($fTimeOut=false)
 	{
 
 		if ( false != $fTimeOut ) $this->fTimeOut=$fTimeOut;
@@ -292,5 +295,5 @@ class xajaxCometResponse extends xajaxResponse
 	
 }
 
-$objPluginManager =& xajaxPluginManager::getInstance();
+$objPluginManager = xajaxPluginManager::getInstance();
 $objPluginManager->registerPlugin(new clsCometStreaming());

@@ -99,13 +99,6 @@ final class xajaxArgumentManager
 		return false;
 	}
 	
-	private function __argumentStripSlashes(&$sArg)
-	{
-		if (false == is_string($sArg))
-			return;
-		
-		$sArg = stripslashes($sArg);
-	}
 	
 	private function __convertValue($value)
 	{
@@ -200,28 +193,6 @@ final class xajaxArgumentManager
 			$mArg = mb_convert_encoding($mArg, $this->sCharacterEncoding, "UTF-8");
 	}
 	
-	private function __argumentDecodeUTF8_utf8_decode(&$mArg)
-	{
-		if (is_array($mArg))
-		{
-			foreach (array_keys($mArg) as $sKey)
-			{
-				$sNewKey = $sKey;
-				$this->__argumentDecodeUTF8_utf8_decode($sNewKey);
-				
-				if ($sNewKey != $sKey)
-				{
-					$mArg[$sNewKey] = $mArg[$sKey];
-					unset($mArg[$sKey]);
-					$sKey = $sNewKey;
-				}
-				
-				$this->__argumentDecodeUTF8_utf8_decode($mArg[$sKey]);
-			}
-		}
-		else if (is_string($mArg))
-			$mArg = utf8_decode($mArg);
-	}
 	
 	/*
 		Constructor: xajaxArgumentManager
@@ -244,11 +215,7 @@ final class xajaxArgumentManager
 			$this->nMethod = XAJAX_METHOD_GET;
 			$this->aArgs = $_GET['xjxargs'];
 		}
-		if (1 == get_magic_quotes_gpc())
-			array_walk($this->aArgs, array(&$this, '__argumentStripSlashes'));
-			
-
-		array_walk($this->aArgs, array(&$this, '__argumentDecode'));
+		array_walk($this->aArgs, array($this, '__argumentDecode'));
 	}
 	
 	/*
@@ -318,8 +285,6 @@ final class xajaxArgumentManager
 				$sFunction = "iconv";
 			else if (function_exists('mb_convert_encoding'))
 				$sFunction = "mb_convert_encoding";
-			else if ($this->sCharacterEncoding == "ISO-8859-1")
-				$sFunction = "utf8_decode";
 			else {
 				$objLanguageManager = xajaxLanguageManager::getInstance();
 				trigger_error(
@@ -328,7 +293,7 @@ final class xajaxArgumentManager
 					);
 			}
 			
-			$mFunction = array(&$this, '__argumentDecodeUTF8_' . $sFunction);
+			$mFunction = array($this, '__argumentDecodeUTF8_' . $sFunction);
 			
 			array_walk($this->aArgs, $mFunction);
 			$this->bDecodeUTF8Input = false;

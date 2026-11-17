@@ -2,7 +2,7 @@
 if(false==class_exists('xajaxPlugin')||false==class_exists('xajaxPluginManager')){$sBaseFolder=dirname(dirname(dirname(__FILE__)));$sXajaxCore=$sBaseFolder . '/xajax_core';if(false==class_exists('xajaxPlugin'))
 require $sXajaxCore . '/xajaxPlugin.inc.php';if(false==class_exists('xajaxPluginManager'))
 require $sXajaxCore . '/xajaxPluginManager.inc.php';}
-class clsTableUpdater extends xajaxResponsePlugin{var $sDefer;var $sJavascriptURI;var $bInlineScript;function clsTableUpdater(){$this->sDefer='';$this->sJavascriptURI='';$this->bInlineScript=true;}
+class clsTableUpdater extends xajaxResponsePlugin{var $sDefer;var $sJavascriptURI;var $bInlineScript;function __construct(){$this->sDefer='';$this->sJavascriptURI='';$this->bInlineScript=true;}
 function configure($sName,$mValue){if('scriptDeferral'==$sName){if(true===$mValue||false===$mValue){if($mValue)$this->sDefer='defer ';else $this->sDefer='';}
 }else if('javascript URI'==$sName){$this->sJavascriptURI=$mValue;}else if('inlineScript'==$sName){if(true===$mValue||false===$mValue)
 $this->bInlineScript=$mValue;}
@@ -109,4 +109,4 @@ array(
 $value
 );}
 }
-$objPluginManager=&xajaxPluginManager::getInstance();$objPluginManager->registerPlugin(new clsTableUpdater());
+$objPluginManager=xajaxPluginManager::getInstance();$objPluginManager->registerPlugin(new clsTableUpdater());

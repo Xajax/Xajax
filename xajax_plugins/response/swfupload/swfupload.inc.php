@@ -27,7 +27,7 @@ class clsSwfUpload
 	private $sXajaxPrefix = "xajax_";
 	//--------------------------------------------------------------------------------------------------------------------------------
 
-	public function clsSwfUpload()
+	public function __construct()
 	{
 		$this->sDefer = '';
 		$this->sJavascriptURI = '';
@@ -153,6 +153,6 @@ class clsSwfUpload
 
 }
 
-$objPluginManager = &xajaxPluginManager::getInstance();
+$objPluginManager = xajaxPluginManager::getInstance();
 $objPluginManager->registerPlugin( new clsSwfUpload(), 100 );
 ?>

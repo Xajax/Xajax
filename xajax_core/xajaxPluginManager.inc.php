@@ -568,6 +568,9 @@ final class xajaxPluginManager
 			$sOutFile = $sHash.'.js';
 			$sOutPath = dirname(dirname(__FILE__)).'/xajax_js/deferred/';
 
+			if (!is_dir($sOutPath))
+				@mkdir($sOutPath, 0777, true);
+
 			if (!is_file($sOutPath.$sOutFile) )
 			{
 				ob_start();
@@ -650,7 +653,8 @@ final class xajaxPluginManager
 		$sHash = '';
 		foreach ($aKeys as $sKey)
 		{
-			$sHash .= $this->aClientScriptGenerators[$sKey]->generateHash();
+			if (method_exists($this->aClientScriptGenerators[$sKey], 'generateHash'))
+				$sHash .= $this->aClientScriptGenerators[$sKey]->generateHash();
 		}
 		return md5($sHash);
 	}

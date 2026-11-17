@@ -37,7 +37,7 @@ function test() {
         return $objResponse;
 }
 
-$xajax->registerFunction("test");
+$xajax->register(XAJAX_FUNCTION, "test");
 $xajax->processRequest();
 
 header("Content-Type: application/vnd.mozilla.xul+xml");

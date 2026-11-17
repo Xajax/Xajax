@@ -659,7 +659,7 @@ final class xajax
 							fwrite(
 								$fH, 
 								$this->objLanguageManager->getText('LOGHDR:01')
-								. strftime("%b %e %Y %I:%M:%S %p") 
+								. date("M j Y h:i:s A") 
 								. $this->objLanguageManager->getText('LOGHDR:02')
 								. $sErrorMessage 
 								. $this->objLanguageManager->getText('LOGHDR:03')

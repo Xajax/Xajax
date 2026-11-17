@@ -70,13 +70,13 @@ function setColor($sColor)
 	- <helloWorld>
 	- <setColor>
 */
-$reqHelloWorldMixed =& $xajax->registerFunction('helloWorld');
+$reqHelloWorldMixed = $xajax->register(XAJAX_FUNCTION, 'helloWorld');
 $reqHelloWorldMixed->setParameter(0, XAJAX_JS_VALUE, 0);
 
-$reqHelloWorldAllCaps =& $xajax->registerFunction('helloWorld');
+$reqHelloWorldAllCaps = $xajax->register(XAJAX_FUNCTION, 'helloWorld');
 $reqHelloWorldAllCaps->setParameter(0, XAJAX_JS_VALUE, 1);
 
-$reqSetColor =& $xajax->registerFunction('setColor');
+$reqSetColor = $xajax->register(XAJAX_FUNCTION, 'setColor');
 $reqSetColor->setParameter(0, XAJAX_INPUT_VALUE, 'colorselect');
 
 /*

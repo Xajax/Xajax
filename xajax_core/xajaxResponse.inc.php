@@ -79,6 +79,13 @@ class xajaxResponse
 	
 	// sorry but this config is static atm
 	private $sContentType = 'application/json'; //'text/xml';
+
+	/*
+		String: sResponseType
+
+		The response type currently in use ('XML' or 'JSON').
+	*/
+	private $sResponseType = 'JSON';
 	
 	/*
 		Constructor: xajaxResponse
@@ -1861,8 +1868,8 @@ class xajaxResponse
 			//EndSkipDebug
 			
 			echo call_user_func_array(
-				'mb_convert_encoding', 
-				array($sData, 'HTML-ENTITIES', $this->sCharacterEncoding)
+				'mb_encode_numericentity',
+				array($sData, array(0x80, 0x10FFFF, 0, 0xFFFFFF), $this->sCharacterEncoding)
 				);
 			return;
 		}
@@ -1974,7 +1981,7 @@ class xajaxCustomResponse
 	protected $sCharacterEncoding;
 	protected $bOutputEntities;
 	
-	function xajaxCustomResponse($sContentType)
+	function __construct($sContentType)
 	{
 		$this->sOutput = '';
 		$this->sContentType = $sContentType;

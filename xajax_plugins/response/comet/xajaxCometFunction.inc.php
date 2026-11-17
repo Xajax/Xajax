@@ -102,10 +102,10 @@ class xajaxCometFunction
 				
 			$xajax->register(XAJAX_FUNCTION, $myUserFunction);				
 	*/
-	function xajaxCometFunction($uf, $sInclude=NULL, $aConfiguration=array())
+	function __construct($uf, $sInclude=NULL, $aConfiguration=array())
 	{
 		$this->sAlias = '';
-		$this->uf =& $uf;
+		$this->uf = $uf;
 		$this->sInclude = $sInclude;
 		$this->aConfiguration = array();
 		foreach ($aConfiguration as $sKey => $sValue)
@@ -208,7 +208,7 @@ class xajaxCometFunction
 	*/
 	function call($aArgs=array())
 	{
-		$objResponseManager =& xajaxResponseManager::getInstance();
+		$objResponseManager = xajaxResponseManager::getInstance();
 		
 		if (NULL != $this->sInclude)
 		{

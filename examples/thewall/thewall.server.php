@@ -73,7 +73,7 @@ class graffiti
 		
 		Builds the <html> output and sets the <isValid> indicator.
 	*/
-	function graffiti($sHandle, $sWords)
+	function __construct($sHandle, $sWords)
 	{
 		if (trim($sHandle) == "" || trim($sWords) == "")
 		{
